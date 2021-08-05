@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "267059766345",
+    "project_id": "ridex-a842e",
+    "storage_bucket": "ridex-a842e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267059766345:android:ce98476060e7dad31c4b98",
+        "android_client_info": {
+          "package_name": "com.example.driver_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "267059766345-hj8r6u3pijld4qi9i7d0uukr0588bjip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3fEmRVeEy8GFBuJobUztWY0W-pEs8rp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "267059766345-hj8r6u3pijld4qi9i7d0uukr0588bjip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
