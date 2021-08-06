@@ -33,7 +33,8 @@ dependencies:
   firebase_auth: ^3.0.1
   firebase_storage: ^10.0.1
   cloud_firestore: ^2.4.0
-  flutter_launcher_icons: "^0.9.1"
+  flutter_launcher_icons: 
+  flutter_launcher_name: 
 
 dev_dependencies:
   flutter_test:
@@ -84,3 +85,6 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/app icons - driver/driver_app_icon.png"
+
+flutter_launcher_name:
+  name: "RideX Driver"

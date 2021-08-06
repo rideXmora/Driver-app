@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.driver_app">
    <application
-        android:label="driver_app"
+        android:label="RideX Driver"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
