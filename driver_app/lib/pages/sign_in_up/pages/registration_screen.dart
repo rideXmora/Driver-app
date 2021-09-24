@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/selecting_vchicle_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,9 +42,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           widget.phoneNo.substring(5, 8) +
           " " +
           widget.phoneNo.substring(8, 12);
+      selectedOrganization = 0;
+      organizationController.text = organizations[0];
     });
-    selectedOrganization = 0;
-    organizationController.text = organizations[0];
   }
 
   @override
@@ -290,7 +291,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => BottomNavHandler(),
+                      builder: (BuildContext context) =>
+                          SelectingVechicleTypeScreen(),
                     ),
                   );
                 });
