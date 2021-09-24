@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,7 @@ class LanguageSelectionScreen extends StatelessWidget {
               icon: Icons.arrow_forward_rounded,
               iconColor: primaryColorWhite,
               onPressed: () {
-                Get.to(GettingStartedScreen());
+                Get.to(WelcomeScreen());
               },
               text: "",
               boxColor: primaryColorDark,
