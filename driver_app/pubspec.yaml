@@ -64,6 +64,10 @@ flutter:
   assets:
     - assets/
     - assets/app icons - driver/
+    - assets/logo/
+    - assets/svgs/
+    - assets/lotties/
+    - assets/images/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

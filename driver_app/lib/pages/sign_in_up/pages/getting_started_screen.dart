@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -168,18 +169,17 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                           setState(() {
                             loading = false;
                           });
-                          await Get.find<AuthController>()
-                              .signUp(phone: phoneNumber);
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (BuildContext context) =>
-                          //         MobileNumberVerificationScreen(
-                          //             phoneNo: phoneNumber,
-                          //             page: "GETTING_STARTED_PAGE"),
-                          //   ),
-                          // );
-
+                          // await Get.find<AuthController>()
+                          //     .signUp(phone: phoneNumber);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  MobileNumberVerificationScreen(
+                                      phoneNo: phoneNumber,
+                                      page: "GETTING_STARTED_PAGE"),
+                            ),
+                          );
                         } else {
                           setState(() {
                             loading = false;
