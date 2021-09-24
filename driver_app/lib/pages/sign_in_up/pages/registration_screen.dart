@@ -26,6 +26,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController organizationController = TextEditingController();
+  List<String> organizations = ["a", "B", "c"];
+  late int selectedOrganization;
   bool loading = false;
 
   @override
@@ -38,21 +42,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           " " +
           widget.phoneNo.substring(8, 12);
     });
-  }
-
-  Future _pickImageFromToProfile(BuildContext context) async {
-    // final pickImagefile = await PickMedia.pickImageToUpload(
-    //   cropImage: cropSquareImage,
-    // );
-
-    // setState(() {
-    //   if (pickImagefile == null) {
-    //     print('No image selected.');
-    //   } else {
-    //     _imageProfile = File(pickImagefile.path);
-    //     uploadProfileImage(context);
-    //   }
-    // });
+    selectedOrganization = 0;
+    organizationController.text = organizations[0];
   }
 
   @override
@@ -82,56 +73,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     height: 30,
                   ),
                   Text(
-                    "Let's be a\nRideX Passenger",
+                    "Let's be a\nRideX Driver",
                     style: TextStyle(
                       color: primaryColorDark,
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  Center(
-                    child: Container(
-                      height: 115,
-                      width: 115,
-                      child: Stack(
-                        children: [
-                          // * Image
-                          Container(
-                            width: 115,
-                            height: 115,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                    "assets/images/images/user_icon.png"),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(200),
-                              ),
-                              child: IconButton(
-                                icon: Icon(Icons.camera_alt),
-                                color: Colors.white,
-                                iconSize: 18,
-                                onPressed: () {
-                                  _pickImageFromToProfile(context);
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                   SizedBox(
@@ -142,7 +88,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     height: height,
                     width: width,
                     controller: nameController,
-                    hintText: "Name",
+                    hintText: "Full Name",
                     prefixBoxColor: primaryColorBlack,
                     prefixIcon: Icon(
                       Icons.person,
@@ -166,6 +112,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     prefixBoxColor: primaryColorBlack,
                     prefixIcon: Icon(
                       Icons.email,
+                      color: primaryColorLight,
+                    ),
+                    dropDown: SizedBox(),
+                    onChanged: () {},
+                    phoneNumberPrefix: SizedBox(),
+                    suffix: SizedBox(),
+                    inputFormatters: [],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  CustomTextField(
+                    readOnly: edit ? false : true,
+                    height: height,
+                    width: width,
+                    controller: cityController,
+                    hintText: "city",
+                    prefixBoxColor: primaryColorBlack,
+                    prefixIcon: Icon(
+                      Icons.location_on_sharp,
                       color: primaryColorLight,
                     ),
                     dropDown: SizedBox(),
@@ -248,6 +214,48 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ],
                     ),
                     suffix: SizedBox(),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  CustomTextField(
+                    readOnly: true,
+                    height: height,
+                    width: width,
+                    controller: organizationController,
+                    hintText: "Organization",
+                    prefixBoxColor: primaryColorBlack,
+                    prefixIcon: Icon(
+                      Icons.location_city,
+                      color: primaryColorLight,
+                    ),
+                    dropDown: SizedBox(),
+                    onChanged: () {},
+                    phoneNumberPrefix: SizedBox(),
+                    suffix: IgnorePointer(
+                      ignoring: edit ? false : true,
+                      child: PopupMenuButton<String>(
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: primaryColorWhite,
+                        ),
+                        onSelected: (String value) {
+                          setState(() {
+                            debugPrint(value);
+                            organizationController.text = value;
+                          });
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return organizations
+                              .map<PopupMenuItem<String>>((String language) {
+                            return PopupMenuItem(
+                                child: Text(language), value: language);
+                          }).toList();
+                        },
+                      ),
+                    ),
+                    inputFormatters: [],
                   ),
                   SizedBox(
                     height: 90,
