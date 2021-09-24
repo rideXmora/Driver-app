@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:driver_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,11 +23,11 @@ class MyApp extends StatelessWidget {
       title: 'RideX Driver',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          // primaryColor: primaryColor,
-          // primaryColorDark: primaryColorDark,
-          // primaryColorLight: primaryColorLight,
-          // backgroundColor: primaryColorWhite,
-          ),
+        primaryColor: primaryColor,
+        primaryColorDark: primaryColorDark,
+        primaryColorLight: primaryColorLight,
+        backgroundColor: primaryColorWhite,
+      ),
       // initialBinding: AppBinding(),
       // home: SplashScreen(),
       home: MyHomePage(),
