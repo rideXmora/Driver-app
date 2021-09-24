@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:driver_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+
+import 'controllers/app_binding.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'RideX Driver',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: primaryColorLight,
         backgroundColor: primaryColorWhite,
       ),
-      // initialBinding: AppBinding(),
+      initialBinding: AppBinding(),
       // home: SplashScreen(),
       home: MyHomePage(),
     );
