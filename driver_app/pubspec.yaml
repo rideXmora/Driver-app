@@ -28,13 +28,22 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  firebase_core: ^1.4.0
-  firebase_messaging: ^10.0.4
-  firebase_auth: ^3.0.1
-  firebase_storage: ^10.0.1
-  cloud_firestore: ^2.4.0
-  flutter_launcher_icons: 
-  flutter_launcher_name: 
+  # firebase_core: ^1.0.0
+  # firebase_messaging: ^9.0.0
+  # firebase_auth: ^1.0.0
+  # firebase_storage: ^8.0.0
+  # cloud_firestore: ^1.0.0
+  flutter_launcher_icons: ^0.9.0
+  # flutter_launcher_name: 
+  flutter_svg: ^0.21.0
+  flutter_multi_formatter:
+  pinput:
+  google_maps_flutter: ^2.0.8
+  sliding_up_panel: ^2.0.0+1
+  awesome_card:
+  lottie:
+  get: ^4.3.8
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
@@ -86,5 +95,5 @@ flutter_icons:
   ios: true
   image_path: "assets/app icons - driver/driver_app_icon.png"
 
-flutter_launcher_name:
-  name: "RideX Driver"
+# flutter_launcher_name:
+#   name: "RideX Driver"

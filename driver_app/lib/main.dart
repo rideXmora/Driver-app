@@ -1,9 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(new MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -14,8 +22,13 @@ class MyApp extends StatelessWidget {
       title: 'RideX Driver',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          // primaryColor: primaryColor,
+          // primaryColorDark: primaryColorDark,
+          // primaryColorLight: primaryColorLight,
+          // backgroundColor: primaryColorWhite,
+          ),
+      // initialBinding: AppBinding(),
+      // home: SplashScreen(),
       home: MyHomePage(),
     );
   }
