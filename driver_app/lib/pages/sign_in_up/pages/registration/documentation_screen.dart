@@ -3,6 +3,7 @@ import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/revenue_license_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/vechicle_insuarance_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/vechicle_registraton_doc_upload_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/waiting_screen.dart';
 import 'package:driver_app/pages/sign_in_up/widgets/ducument_box.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -120,13 +121,11 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                         setState(() {
                           loading = false;
                         });
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             RegistrationScreen(
-                        //               phoneNo: widget.phoneNo,
-                        //             )));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    WaitingScreen()));
                       });
                     }
                   },
