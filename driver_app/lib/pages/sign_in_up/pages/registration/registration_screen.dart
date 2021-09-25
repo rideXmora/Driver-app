@@ -1,4 +1,4 @@
-import 'package:driver_app/pages/sign_in_up/pages/selecting_vchicle_type.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/selecting_vchicle_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,6 +1,6 @@
+import 'package:driver_app/pages/sign_in_up/pages/registration/registration_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:driver_app/pages/sign_in_up/pages/registration_screen.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/main_button.dart';

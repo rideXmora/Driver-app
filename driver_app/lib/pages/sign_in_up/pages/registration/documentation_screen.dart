@@ -1,3 +1,8 @@
+import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/driving_license_upload_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/profile_pic_upload_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/revenue_license_upload_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/vechicle_insuarance_upload_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/vechicle_registraton_doc_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/widgets/ducument_box.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -16,27 +21,27 @@ class DocumentationScreen extends StatefulWidget {
 class _DocumentationScreenState extends State<DocumentationScreen> {
   List<Map<String, dynamic>> dataList = [
     {
-      "page": DocumentationScreen(),
+      "page": ProfilePicUploadScreen(),
       "icon": "assets/svgs/Profile pic.svg",
       "topic": "Profile Picture",
     },
     {
-      "page": DocumentationScreen(),
+      "page": DrivingLicenseUploadScreen(),
       "icon": "assets/svgs/Id card.svg",
       "topic": "Driving License",
     },
     {
-      "page": DocumentationScreen(),
+      "page": VechicleInsuaranceUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",
       "topic": "Vehicle insurance (Third party/Private/Hiring)",
     },
     {
-      "page": DocumentationScreen(),
+      "page": RevenueLicenseUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",
       "topic": "Revenue License",
     },
     {
-      "page": DocumentationScreen(),
+      "page": VechicleRegistratonDocUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",
       "topic": "Vehicle Registration Document",
     },
@@ -125,39 +130,9 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                       });
                     }
                   },
-                  text: "CONTINUE",
+                  text: "DONE",
                   boxColor: primaryColorDark,
                   shadowColor: primaryColorDark,
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Didn't get a code?",
-                          style: TextStyle(
-                            color: primaryColorBlack,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextSpan(
-                          text: " Resend",
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
