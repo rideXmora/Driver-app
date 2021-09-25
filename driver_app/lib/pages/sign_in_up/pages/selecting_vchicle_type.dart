@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/documentation_screen.dart';
 import 'package:driver_app/pages/sign_in_up/widgets/vechicle_selection_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _SelectingVechicleTypeScreenState
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => BottomNavHandler(),
+                  builder: (BuildContext context) => DocumentationScreen(),
                 ),
               );
             } else {
