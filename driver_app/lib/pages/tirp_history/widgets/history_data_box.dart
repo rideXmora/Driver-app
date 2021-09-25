@@ -170,15 +170,21 @@ class HistoryDataBox extends StatelessWidget {
                         children: [
                           SimpleIconTextBox(
                             icon: Icons.location_on_sharp,
+                            iconColor: primaryColorLight,
                             text: "0.1 miles",
+                            textColor: primaryColorWhite,
                           ),
                           SimpleIconTextBox(
                             icon: Icons.timer,
+                            iconColor: primaryColorLight,
                             text: "1 min",
+                            textColor: primaryColorWhite,
                           ),
                           SimpleIconTextBox(
                             icon: Icons.attach_money_sharp,
+                            iconColor: primaryColorLight,
                             text: "250 LKR",
+                            textColor: primaryColorWhite,
                           ),
                         ],
                       ),

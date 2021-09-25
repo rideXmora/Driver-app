@@ -15,64 +15,17 @@ class HomeScreens extends StatefulWidget {
 }
 
 TextEditingController whereController = TextEditingController();
-bool search = false;
-bool map = false;
 
 class _HomeScreensState extends State<HomeScreens> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // if (map && tripState == TripState.TRIPCOMPLETED) {
-        if (map) {
-          setState(() {
-            map = false;
-          });
-        } else if (search) {
-          setState(() {
-            search = false;
-          });
-        } else {
-          SystemNavigator.pop();
-        }
+        SystemNavigator.pop();
+
         return false;
       },
-      child: Stack(
-        children: [
-          Center(
-            child: HomeScreen(
-              onTap: () {
-                setState(() {
-                  search = true;
-                });
-                Get.find<Controller>().increment();
-              },
-            ),
-          ),
-          search
-              ? SearchLocationScreen(
-                  onBack: () {
-                    setState(() {
-                      search = false;
-                    });
-                  },
-                  toMap: () {
-                    setState(() {
-                      map = true;
-                    });
-                  },
-                )
-              : Container(),
-          map
-              ? MapScreen(onBack: () {
-                  debugPrint("s");
-                  setState(() {
-                    map = false;
-                  });
-                })
-              : Container(),
-        ],
-      ),
+      child: MapScreen(),
     );
   }
 }

@@ -56,6 +56,7 @@ class SecondaryButton extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ],
               ),

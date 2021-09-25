@@ -4,6 +4,7 @@ import 'package:driver_app/theme/colors.dart';
 class SmoothStarRating extends StatelessWidget {
   SmoothStarRating({
     Key? key,
+    required this.size,
     required this.rating,
     this.starCount = 5,
     this.onRatingChanged1,
@@ -19,6 +20,7 @@ class SmoothStarRating extends StatelessWidget {
   final onRatingChanged5;
   final int rating;
   final starCount;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class SmoothStarRating extends StatelessWidget {
           child: Icon(
             Icons.star_rate_rounded,
             color: rating >= 1 ? Color(0xFFFFD708) : primaryColorWhite,
-            size: 40,
+            size: size,
           ),
         ),
         GestureDetector(
@@ -39,7 +41,7 @@ class SmoothStarRating extends StatelessWidget {
           child: Icon(
             Icons.star_rate_rounded,
             color: rating >= 2 ? Color(0xFFFFD708) : primaryColorWhite,
-            size: 40,
+            size: size,
           ),
         ),
         GestureDetector(
@@ -47,7 +49,7 @@ class SmoothStarRating extends StatelessWidget {
           child: Icon(
             Icons.star_rate_rounded,
             color: rating >= 3 ? Color(0xFFFFD708) : primaryColorWhite,
-            size: 40,
+            size: size,
           ),
         ),
         GestureDetector(
@@ -55,7 +57,7 @@ class SmoothStarRating extends StatelessWidget {
           child: Icon(
             Icons.star_rate_rounded,
             color: rating >= 4 ? Color(0xFFFFD708) : primaryColorWhite,
-            size: 40,
+            size: size,
           ),
         ),
         GestureDetector(
@@ -63,7 +65,7 @@ class SmoothStarRating extends StatelessWidget {
           child: Icon(
             Icons.star_rate_rounded,
             color: rating >= 5 ? Color(0xFFFFD708) : primaryColorWhite,
-            size: 40,
+            size: size,
           ),
         ),
       ],

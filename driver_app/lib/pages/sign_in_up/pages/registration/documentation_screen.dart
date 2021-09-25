@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/driving_license_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/profile_pic_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/revenue_license_upload_screen.dart';
@@ -121,11 +122,17 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                         setState(() {
                           loading = false;
                         });
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (BuildContext context) =>
+                        //             WaitingScreen()));
+
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    WaitingScreen()));
+                                    BottomNavHandler()));
                       });
                     }
                   },

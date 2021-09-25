@@ -87,6 +87,7 @@ class RateAndComment extends StatelessWidget {
                         onRatingChanged3: onRatingChanged3,
                         onRatingChanged4: onRatingChanged4,
                         onRatingChanged5: onRatingChanged5,
+                        size: 40,
                       ),
                     ),
                     Text(

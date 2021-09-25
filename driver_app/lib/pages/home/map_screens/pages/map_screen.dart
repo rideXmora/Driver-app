@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:driver_app/modals/passenger.dart';
+import 'package:driver_app/modals/trip.dart';
+import 'package:driver_app/utils/payment_method.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:driver_app/modals/driver.dart';
-import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/finding_ride_floating_panel.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/ride_floating_panel.dart';
-import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
+import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/ride_request_floating_panel.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/pop_up/Rate_and_comment.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/pop_up/trip_completed.dart';
 import 'package:driver_app/utils/trip_state_enum.dart';
@@ -17,9 +18,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class MapScreen extends StatefulWidget {
   MapScreen({
     Key? key,
-    required this.onBack,
   }) : super(key: key);
-  final onBack;
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -33,29 +32,24 @@ final CameraPosition _kGooglePlex = CameraPosition(
 
 class _MapScreenState extends State<MapScreen> {
   bool loading = false;
-  TextEditingController paymentMethod = TextEditingController();
-  int slectedMethod = 0;
-  List<Map<String, dynamic>> methods = [
-    {
-      "Icon": Icons.money,
-      "method": "Cash Payment",
-      "index": 0,
-    },
-    {
-      "Icon": Icons.credit_card,
-      "method": "Card Payment",
-      "index": 1,
-    }
-  ];
 
-  Driver driver = Driver(
-    image: "a",
+  Passenger passenger = Passenger(
+    image: "assets/images/images/user_icon.png",
     name: "Avishka Rathnavibushana",
     number: "+94711737706",
-    vechicleType: "Toyota Corolla",
+    rating: 3.4,
   );
 
-  TripState tripState = TripState.SELECTVECHICLE;
+  Trip trip = Trip(
+    pickUp: "Moratuwa, Sri Lanka",
+    destination: "Panadura, Sri Lanka",
+    distance: 0.1,
+    time: 20,
+    amount: 250,
+    paymentMethod: PaymentMethod.CASH,
+  );
+
+  TripState tripState = TripState.RIDERREQUEST;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
@@ -63,10 +57,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      paymentMethod.text = methods[0]["method"];
-      slectedMethod = 0;
-    });
   }
 
   Widget _floatingCollapsed(TripState state) {
@@ -98,15 +88,13 @@ class _MapScreenState extends State<MapScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    state == TripState.SELECTVECHICLE
-                        ? "Confirm ride"
-                        : state == TripState.FINDINGRIDE
-                            ? "Finding ride"
-                            : state == TripState.DRIVERCOMMING
-                                ? "Driver is comming"
-                                : state == TripState.GOINGTODESTINATION
-                                    ? "Going to destination"
-                                    : "",
+                    state == TripState.RIDERREQUEST
+                        ? "New ride request"
+                        : state == TripState.ACCEPTED
+                            ? "Accepted"
+                            : state == TripState.ONTRIP
+                                ? "On trip"
+                                : "",
                     style: TextStyle(
                       color: primaryColorWhite,
                       fontSize: 18,
@@ -138,14 +126,8 @@ class _MapScreenState extends State<MapScreen> {
             fontWeight: FontWeight.w700,
           ),
         ),
+        leading: Container(),
         centerTitle: true,
-        leading: GestureDetector(
-          onTap: widget.onBack,
-          child: Icon(
-            Icons.keyboard_arrow_left_sharp,
-            size: 30,
-          ),
-        ),
       ),
       body: SafeArea(
         child: Stack(
@@ -163,71 +145,68 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            tripState == TripState.SELECTVECHICLE ||
-                    tripState == TripState.FINDINGRIDE ||
-                    tripState == TripState.DRIVERCOMMING ||
-                    tripState == TripState.GOINGTODESTINATION
+            tripState == TripState.RIDERREQUEST ||
+                    tripState == TripState.ACCEPTED ||
+                    tripState == TripState.ONTRIP
                 ? SlidingUpPanel(
                     renderPanelSheet: false,
-                    panel: tripState == TripState.SELECTVECHICLE
-                        ? SelectVechicleTypeFloatingPanel(
-                            paymentMethod: paymentMethod,
-                            methods: methods,
-                            slectedMethod: slectedMethod,
+                    panel: tripState == TripState.RIDERREQUEST
+                        ? RideRequestFloatingPanel(
                             loading: loading,
-                            onSelect: (String value) {
+                            passenger: passenger,
+                            trip: trip,
+                            onPressedAccept: () {
                               setState(() {
-                                slectedMethod =
-                                    methods[int.parse(value)]["index"];
+                                tripState = TripState.ACCEPTED;
                               });
                             },
-                            onPressed: () {
+                            onPressedReject: () {
                               setState(() {
-                                tripState = TripState.FINDINGRIDE;
+                                tripState = TripState.NOTRIP;
                               });
                             },
                           )
-                        : tripState == TripState.FINDINGRIDE
-                            ? FindingRideFloatingPanel(
+                        : tripState == TripState.ACCEPTED
+                            ? RideFloatingPanel(
+                                tripState: tripState,
                                 loading: loading,
-                                onPressed: () {
+                                passenger: passenger,
+                                trip: trip,
+                                onPressedAccept: () {
                                   setState(() {
-                                    tripState = TripState.DRIVERCOMMING;
+                                    tripState = TripState.ONTRIP;
+                                  });
+                                },
+                                onPressedReject: () {
+                                  setState(() {
+                                    tripState = TripState.NOTRIP;
                                   });
                                 },
                               )
-                            : tripState == TripState.DRIVERCOMMING
+                            : tripState == TripState.ONTRIP
                                 ? RideFloatingPanel(
-                                    driver: driver,
-                                    time: "1 min",
                                     tripState: tripState,
                                     loading: loading,
-                                    onPressed: () {
+                                    passenger: passenger,
+                                    trip: trip,
+                                    onPressedAccept: () {
                                       setState(() {
-                                        tripState =
-                                            TripState.GOINGTODESTINATION;
+                                        tripState = TripState.TRIPCOMPLETED;
+                                      });
+                                    },
+                                    onPressedReject: () {
+                                      setState(() {
+                                        tripState = TripState.NOTRIP;
                                       });
                                     },
                                   )
-                                : tripState == TripState.GOINGTODESTINATION
-                                    ? RideFloatingPanel(
-                                        driver: driver,
-                                        time: "1 min",
-                                        tripState: tripState,
-                                        loading: loading,
-                                        onPressed: () {
-                                          setState(() {
-                                            tripState = TripState.TRIPCOMPLETED;
-                                          });
-                                        },
-                                      )
-                                    : Container(),
+                                : Container(),
                     collapsed: _floatingCollapsed(tripState),
                     backdropColor: Colors.transparent,
                     defaultPanelState: PanelState.OPEN,
-                    maxHeight: tripState == TripState.DRIVERCOMMING ||
-                            tripState == TripState.GOINGTODESTINATION
-                        ? 270
+                    maxHeight: tripState == TripState.ACCEPTED ||
+                            tripState == TripState.ONTRIP
+                        ? 320
                         : 360,
                   )
                 : Container(),
