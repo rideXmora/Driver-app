@@ -1,7 +1,9 @@
+import 'package:driver_app/widgets/vehicle_type.dart';
+
 class Vehicle {
   Vehicle({
     this.number = "",
-    this.vehicleType = "",
+    this.vehicleType = VehicleType.THREE_WHEELER,
     this.model = "",
     this.license = "",
     this.insurance = "",
@@ -9,7 +11,7 @@ class Vehicle {
   });
 
   String number;
-  String vehicleType;
+  VehicleType vehicleType;
   String model;
   String license;
   String insurance;
