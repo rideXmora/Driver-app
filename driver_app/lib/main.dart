@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:driver_app/pages/splash_screen.dart';
 import 'package:driver_app/theme/colors.dart';
+import 'package:driver_app/utils/local_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
         primaryColorLight: primaryColorLight,
         backgroundColor: primaryColorWhite,
       ),
+      translations: LocalString(),
+      locale: Locale('en', 'US'),
       initialBinding: AppBinding(),
       home: SplashScreen(),
     );
