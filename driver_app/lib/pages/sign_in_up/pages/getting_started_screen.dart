@@ -1,3 +1,4 @@
+import 'package:driver_app/controllers/auth_controller.dart';
 import 'package:driver_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/custom_text_field.dart';
 import 'package:driver_app/widgets/main_button.dart';
+import 'package:get/get.dart';
 
 class GettingStartedScreen extends StatefulWidget {
   const GettingStartedScreen({Key? key}) : super(key: key);
@@ -20,6 +22,49 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   String dropdownValue = "+94";
   TextEditingController mobileNumberController = TextEditingController();
   bool loading = false;
+
+  void onSubmitText(String value) async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      debugPrint(phoneNumber.length.toString());
+
+      await Get.find<AuthController>().getOTP(
+        phone: phoneNumber,
+        from: "main",
+      );
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void onSubmitButton() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      debugPrint(phoneNumber.length.toString());
+
+      await Get.find<AuthController>().getOTP(
+        phone: phoneNumber,
+        from: "main",
+      );
+      // Get.to(() => MobileNumberVerificationScreen(phoneNo: phoneNumber));
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -119,22 +119,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     onPressed: () async {
                       Get.to(GettingStartedScreen());
                     },
-                    text: "SIGN IN",
-                    boxColor: primaryColorDark,
-                    shadowColor: primaryColorDark,
-                  ),
-                ),
-                Spacer(
-                  flex: 1,
-                ),
-                Center(
-                  child: MainButton(
-                    width: width * 0.7,
-                    height: height,
-                    onPressed: () async {
-                      Get.to(GettingStartedScreen());
-                    },
-                    text: "REGISTER",
+                    text: "Sign in / Sign up",
                     boxColor: primaryColorDark,
                     shadowColor: primaryColorDark,
                   ),

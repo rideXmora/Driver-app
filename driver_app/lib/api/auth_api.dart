@@ -1,12 +1,13 @@
 import 'package:driver_app/api/utils.dart';
 
-Future<void> signUpRequest({required String phone}) async {
-  String url = 'http://ridex.ml/api/auth/passenger/phoneAuth';
-  await postRequest(
+Future<dynamic> phoneAuth({required String phone}) async {
+  String url = '/api/auth/driver/phoneAuth';
+  dynamic response = await postRequest(
     url: url,
     data: {
       "phone": phone,
     },
     token: '',
   );
+  return response;
 }
