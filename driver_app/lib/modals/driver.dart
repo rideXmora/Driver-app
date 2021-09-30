@@ -3,30 +3,69 @@
 
 // String OneServiceToJson(OneService data) => json.encode(data.toJson());
 
+//chnaged
+// image: json["image"],
+//       name: json["name"],
+//       number: json["number"],
+//       rating: json["rating"],
+import 'package:driver_app/modals/vehicle.dart';
+
 class Driver {
   Driver({
-    required this.image,
-    required this.name,
-    required this.number,
-    required this.vechicleType,
+    this.id = "",
+    this.phone = "",
+    this.token = "",
+    this.refreshToken = "",
+    this.email = "",
+    this.name = "",
+    this.totalRating = 0,
+    this.totalRides = 0,
+    this.pastRides = const [],
+    required this.vehicle,
+    this.enabled = false,
+    this.suspend = false,
   });
 
-  String image;
+  String id;
+  String phone;
+  String email;
   String name;
-  String vechicleType;
-  String number;
+  int totalRating;
+  int totalRides;
+  List<String> pastRides;
+  String token;
+  String refreshToken;
+  bool enabled;
+  bool suspend;
+  Vehicle vehicle;
 
   factory Driver.fromJson(Map<dynamic, dynamic> json) => Driver(
-        image: json["image"],
+        id: json["id"],
+        phone: json["phone"],
+        email: json["email"],
         name: json["name"],
-        number: json["number"],
-        vechicleType: json["vechicleType"],
+        totalRating: json["totalRating"],
+        totalRides: json["totalRides"],
+        pastRides: json["pastRides"],
+        token: json["token"],
+        refreshToken: json["refreshToken"],
+        enabled: json["enabled"],
+        suspend: json["suspend"],
+        vehicle: json["vehicle"],
       );
 
   Map<String, dynamic> toJson() => {
-        "image": image,
+        "id": id,
+        "phone": phone,
+        "email": email,
         "name": name,
-        "number": number,
-        "vechicleType": vechicleType,
+        "totalRating": totalRating,
+        "totalRides": totalRides,
+        "pastRides": pastRides,
+        "token": token,
+        "refreshToken": refreshToken,
+        "enabled": enabled,
+        "suspend": suspend,
+        "vehicle": vehicle,
       };
 }
