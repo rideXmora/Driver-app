@@ -19,8 +19,9 @@ class CustomTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.phoneNumberPrefixWidth = 38,
-    required this.onChanged,
+    this.onChanged,
     required this.inputFormatters,
+    this.onSubmit,
   });
 
   final double height;
@@ -39,6 +40,7 @@ class CustomTextField extends StatelessWidget {
   final double phoneNumberPrefixWidth;
   final onChanged;
   final List<TextInputFormatter> inputFormatters;
+  final onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,7 @@ class CustomTextField extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 3),
         child: TextField(
           onTap: onTap,
+          onSubmitted: onSubmit,
           style: TextStyle(
             color: primaryColorWhite,
             fontSize: 20,
