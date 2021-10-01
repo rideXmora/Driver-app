@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -109,7 +110,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                       'en_UK',
                     );
                 }
-                Get.to(GettingStartedScreen());
+                Get.to(WelcomeScreen());
               },
               text: "",
               boxColor: primaryColorDark,

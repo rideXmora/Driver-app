@@ -190,6 +190,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                       ],
                     ),
                     suffix: SizedBox(),
+                    onSubmit: onSubmitText,
                   ),
                   SizedBox(
                     height: 90,
@@ -198,38 +199,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                     loading: loading,
                     width: width,
                     height: height,
-                    onPressed: () async {
-                      if (!loading) {
-                        setState(() {
-                          loading = true;
-                        });
-
-                        // await addInstructor(context);
-                        String phoneNumber = dropdownValue.trim() +
-                            mobileNumberController.text.replaceAll(" ", "");
-                        debugPrint(phoneNumber.length.toString());
-                        if (phoneNumber.length == 12) {
-                          setState(() {
-                            loading = false;
-                          });
-                          // await Get.find<AuthController>()
-                          //     .signUp(phone: phoneNumber);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  MobileNumberVerificationScreen(
-                                      phoneNo: phoneNumber,
-                                      page: "GETTING_STARTED_PAGE"),
-                            ),
-                          );
-                        } else {
-                          setState(() {
-                            loading = false;
-                          });
-                        }
-                      }
-                    },
+                    onPressed: onSubmitButton,
                     text: "CONTINUE",
                     boxColor: primaryColorDark,
                     shadowColor: primaryColorDark,
