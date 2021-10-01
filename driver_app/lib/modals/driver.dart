@@ -8,7 +8,9 @@
 //       name: json["name"],
 //       number: json["number"],
 //       rating: json["rating"],
+import 'package:driver_app/modals/organization.dart';
 import 'package:driver_app/modals/vehicle.dart';
+import 'package:driver_app/utils/driver_status.dart';
 
 class Driver {
   Driver({
@@ -24,6 +26,12 @@ class Driver {
     required this.vehicle,
     this.enabled = false,
     this.suspend = false,
+    this.city = "",
+    this.drivingLicense = "",
+    this.totalIncome = 0,
+    this.sessionIncome = 0,
+    required this.driverOrganization,
+    this.state = DriverState.OFFLINE,
   });
 
   String id;
@@ -38,6 +46,12 @@ class Driver {
   bool enabled;
   bool suspend;
   Vehicle vehicle;
+  String city;
+  String drivingLicense;
+  int totalIncome;
+  int sessionIncome;
+  Organization driverOrganization;
+  DriverState state;
 
   factory Driver.fromJson(Map<dynamic, dynamic> json) => Driver(
         id: json["id"],
@@ -52,6 +66,12 @@ class Driver {
         enabled: json["enabled"],
         suspend: json["suspend"],
         vehicle: json["vehicle"],
+        city: json["city"],
+        drivingLicense: json["drivingLicense"],
+        totalIncome: json["totalIncome"],
+        sessionIncome: json["sessionIncome"],
+        driverOrganization: json["driverOrganization"],
+        state: json["state"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -67,5 +87,11 @@ class Driver {
         "enabled": enabled,
         "suspend": suspend,
         "vehicle": vehicle,
+        "city": city,
+        "drivingLicense": drivingLicense,
+        "totalIncome": totalIncome,
+        "sessionIncome": sessionIncome,
+        "driverOrganization": driverOrganization,
+        "state": state,
       };
 }
