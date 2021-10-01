@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     required this.inputFormatters,
     this.onSubmit,
+    this.textInputAction = TextInputAction.next,
   });
 
   final double height;
@@ -41,6 +42,7 @@ class CustomTextField extends StatelessWidget {
   final onChanged;
   final List<TextInputFormatter> inputFormatters;
   final onSubmit;
+  final TextInputAction textInputAction;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class CustomTextField extends StatelessWidget {
           ),
           controller: controller,
           obscureText: obscureText,
+          textInputAction: textInputAction,
           keyboardType: keyboardType,
           readOnly: readOnly,
           minLines: 1,
