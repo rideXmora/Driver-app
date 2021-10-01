@@ -1,4 +1,4 @@
-import 'package:driver_app/widgets/vehicle_type.dart';
+import 'package:driver_app/utils/vehicle_type.dart';
 
 class Vehicle {
   Vehicle({
