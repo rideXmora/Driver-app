@@ -90,6 +90,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 SharedPreferences store = await SharedPreferences.getInstance();
                 switch (selected) {
                   case 1:
+                    store.setString(
+                      "lan",
+                      'en_UK',
+                    );
                     break;
                   case 2:
                     store.setString(
