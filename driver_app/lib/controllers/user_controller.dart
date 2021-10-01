@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController {
-  var passenger =
+  var driver =
       Driver(vehicle: Vehicle(), driverOrganization: Organization()).obs;
 
   void saveDriverData(dynamic data) {
-    passenger.update((val) {
+    driver.update((val) {
       val!.id = data["id"];
       val.phone = data["phone"];
       val.email = data["email"] == null ? "" : data["email"];
@@ -32,7 +32,7 @@ class UserController extends GetxController {
     String token,
     String refreshToken,
   ) {
-    passenger.update((val) {
+    driver.update((val) {
       val!.id = data["id"];
       val.phone = data["phone"];
       val.email = data["email"] == null ? "" : data["email"];
