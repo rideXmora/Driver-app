@@ -25,3 +25,23 @@ Future<dynamic> phoneVerify(
   );
   return response;
 }
+
+Future<dynamic> profileComplete(
+    {required String name,
+    required String email,
+    required String token,
+    required String city,
+    required Map<String, String> driverOrganization}) async {
+  String url = '/api/driver/profileComplete';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "email": email,
+      "name": name,
+      "city": city,
+      "driverOrganization": driverOrganization,
+    },
+    token: token,
+  );
+  return response;
+}

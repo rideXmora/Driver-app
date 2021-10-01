@@ -1,10 +1,15 @@
 import 'package:driver_app/api/driver_api.dart';
 import 'package:driver_app/controllers/user_controller.dart';
+import 'package:driver_app/modals/organization.dart';
 import 'package:driver_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:driver_app/pages/sign_in_up/pages/getting_started_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/language_selection_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/documentation_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/registration/registration_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/selecting_vchicle_type.dart';
+import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
+import 'package:driver_app/utils/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/api/auth_api.dart';
@@ -40,7 +45,7 @@ class AuthController extends GetxController {
       Get.updateLocale(locale);
       if (token == '') {
         debugPrint("token null");
-        Get.offAll(GettingStartedScreen());
+        Get.offAll(WelcomeScreen());
       } else {
         debugPrint("token not null");
         bool isExpired = await isTokenExpired();
@@ -48,7 +53,7 @@ class AuthController extends GetxController {
           debugPrint("token expired refresh need");
           //to do
           //regenerate token with refresh token
-          Get.offAll(GettingStartedScreen());
+          Get.offAll(WelcomeScreen());
         } else {
           debugPrint("token valid");
           dynamic response = await profile(token: token);
@@ -57,7 +62,7 @@ class AuthController extends GetxController {
             token,
             refreshToken,
           );
-          debugPrint(Get.find<UserController>().passenger.value.toString());
+          debugPrint(Get.find<UserController>().driver.value.toString());
           Get.offAll(() => BottomNavHandler());
         }
       }
@@ -122,14 +127,54 @@ class AuthController extends GetxController {
         if (response["body"]["enabled"]) {
           Get.find<UserController>().saveDriverData(response["body"]);
           debugPrint("user exist : " +
-              Get.find<UserController>().passenger.value.toString());
+              Get.find<UserController>().driver.value.toString());
           Get.offAll(() => BottomNavHandler());
         } else {
           Get.find<UserController>().saveDriverData(response["body"]);
           debugPrint("new user : " +
-              Get.find<UserController>().passenger.value.toString());
-          Get.to(() => SelectingVechicleTypeScreen());
+              Get.find<UserController>().driver.value.toString());
+          Get.to(() => RegistrationScreen(phoneNo: phone));
         }
+      }
+      return;
+    }
+  }
+
+  Future<void> register(
+      {required String name,
+      required String email,
+      required String city,
+      required Organization driverOrganization}) async {
+    if (name.length == 0) {
+      Get.snackbar("Name is not valid!!!", "Name field cannot be empty");
+    } else if (!isEmailValid(email)) {
+    } else if (city.length == 0) {
+      Get.snackbar("City is not valid!!!", "City field cannot be empty");
+    } else {
+      dynamic response = await profileComplete(
+          name: name,
+          email: email,
+          city: city,
+          driverOrganization: {
+            "id": driverOrganization.id,
+            "name": driverOrganization.name,
+          },
+          token: Get.find<UserController>().driver.value.token);
+      debugPrint(response["enabled"].toString());
+
+      if (!response["error"]) {
+        SharedPreferences store = await SharedPreferences.getInstance();
+        String token = store.getString("token").toString();
+        String refreshToken = store.getString("refreshToken").toString();
+        Get.find<UserController>().updateDriverData(
+          response["body"],
+          token,
+          refreshToken,
+        );
+        debugPrint(Get.find<UserController>().driver.value.toString());
+        Get.to(() => SelectingVechicleTypeScreen());
+      } else {
+        Get.snackbar("Something is wrong!!!", "Please try again");
       }
       return;
     }

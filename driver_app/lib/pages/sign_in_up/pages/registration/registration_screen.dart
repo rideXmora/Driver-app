@@ -1,3 +1,8 @@
+import 'package:driver_app/controllers/auth_controller.dart';
+import 'package:driver_app/controllers/organization_controller.dart';
+import 'package:driver_app/controllers/user_controller.dart';
+import 'package:driver_app/modals/driver.dart';
+import 'package:driver_app/modals/organization.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/selecting_vchicle_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +13,8 @@ import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/custom_text_field.dart';
 import 'package:driver_app/widgets/main_button.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget {
   final String phoneNo;
@@ -29,22 +36,102 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController organizationController = TextEditingController();
-  List<String> organizations = ["a", "B", "c"];
+  late List<String> organizations = ["No organization"];
+  late List<Organization> allOrgs;
   late int selectedOrganization;
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
+
+    fillFields();
+  }
+
+  Future<void> fillFields() async {
+    await getOrganizations();
     setState(() {
+      Driver driver = Get.find<UserController>().driver.value;
       mobileNumberController.text = widget.phoneNo.substring(3, 5) +
           " " +
           widget.phoneNo.substring(5, 8) +
           " " +
           widget.phoneNo.substring(8, 12);
+      nameController.text = driver.name;
+      emailController.text = driver.email;
+      cityController.text = driver.city;
+      debugPrint("as" + driver.driverOrganization.name.toString());
+      debugPrint("asq" + organizations.toString());
+      if (driver.driverOrganization.name != "") {
+        selectedOrganization =
+            organizations.indexOf(driver.driverOrganization.name);
+        organizationController.text = organizations[selectedOrganization];
+      }
+    });
+  }
+
+  Future<void> getOrganizations() async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+    allOrgs = await Get.find<OrganizationController>()
+        .allOrg(token: store.getString("token").toString());
+    setState(() {
+      organizations = allOrgs.map((org) => org.name).toList();
       selectedOrganization = 0;
       organizationController.text = organizations[0];
     });
+    debugPrint("org" + allOrgs.toString());
+  }
+
+  void onSubmitButton() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      if (phoneNumber.length == 12) {
+        await Get.find<AuthController>().register(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          city: cityController.text.trim(),
+          driverOrganization: allOrgs[selectedOrganization],
+        );
+        setState(() {
+          loading = false;
+        });
+      } else {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
+  void onSubmitText(String value) async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      if (phoneNumber.length == 12) {
+        await Get.find<AuthController>().register(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          city: cityController.text.trim(),
+          driverOrganization: allOrgs[selectedOrganization],
+        );
+        setState(() {
+          loading = false;
+        });
+      } else {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -57,6 +144,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
+          fillFields();
         },
         child: SafeArea(
           child: SingleChildScrollView(
@@ -100,6 +188,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     phoneNumberPrefix: SizedBox(),
                     suffix: SizedBox(),
                     inputFormatters: [],
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(
                     height: 16,
@@ -120,6 +209,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     phoneNumberPrefix: SizedBox(),
                     suffix: SizedBox(),
                     inputFormatters: [],
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(
                     height: 16,
@@ -140,6 +230,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     phoneNumberPrefix: SizedBox(),
                     suffix: SizedBox(),
                     inputFormatters: [],
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(
                     height: 16,
@@ -245,6 +336,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           setState(() {
                             debugPrint(value);
                             organizationController.text = value;
+                            selectedOrganization = organizations.indexOf(value);
                           });
                         },
                         itemBuilder: (BuildContext context) {
@@ -273,36 +365,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           loading: loading,
           width: width,
           height: height,
-          onPressed: () async {
-            if (!loading) {
-              setState(() {
-                loading = true;
-              });
-
-              // await addInstructor(context);
-              String phoneNumber = dropdownValue.trim() +
-                  mobileNumberController.text.replaceAll(" ", "");
-              debugPrint(phoneNumber.length.toString());
-              if (phoneNumber.length == 12) {
-                Future.delayed(Duration(seconds: 3)).then((value) {
-                  setState(() {
-                    loading = false;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SelectingVechicleTypeScreen(),
-                    ),
-                  );
-                });
-              } else {
-                setState(() {
-                  loading = false;
-                });
-              }
-            }
-          },
+          onPressed: onSubmitButton,
           text: "CONTINUE",
           boxColor: primaryColorDark,
           shadowColor: primaryColorDark,
