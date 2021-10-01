@@ -11,3 +11,17 @@ Future<dynamic> phoneAuth({required String phone}) async {
   );
   return response;
 }
+
+Future<dynamic> phoneVerify(
+    {required String phone, required String otp}) async {
+  String url = '/api/auth/driver/phoneVerify';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "phone": phone,
+      "otp": otp,
+    },
+    token: '',
+  );
+  return response;
+}
