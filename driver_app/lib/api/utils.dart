@@ -42,6 +42,8 @@ Future<Map<dynamic, dynamic>> postRequest(
   try {
     var completeUrl = Uri.http(BASEURL, url);
     var jsonEncodedData = jsonEncode(data);
+
+    debugPrint(jsonEncodedData.toString());
     var response;
     if (token == "") {
       response = await http.post(completeUrl,
@@ -54,10 +56,11 @@ Future<Map<dynamic, dynamic>> postRequest(
           },
           body: jsonEncodedData);
     }
-
     if (response.statusCode == 200 || response.statusCode == 201) {
+      debugPrint("a");
       return generateSuccessOutput(response);
     } else {
+      debugPrint("b");
       return generateErrorOutput(jsonDecode(response.body));
     }
   } catch (error) {
