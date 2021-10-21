@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:driver_app/controllers/ride_controller.dart';
+import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/passenger.dart';
 import 'package:driver_app/modals/trip.dart';
+import 'package:driver_app/utils/driver_status.dart';
 import 'package:driver_app/utils/payment_method.dart';
+import 'package:get/get.dart';
+import 'package:driver_app/widgets/secondary_button_with_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +54,26 @@ class _MapScreenState extends State<MapScreen> {
     paymentMethod: PaymentMethod.CASH,
   );
 
-  TripState tripState = TripState.RIDERREQUEST;
+  TripState tripState = TripState.NOTRIP;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
+
+  bool goingOnline = false;
+
+  Future<void> goOnlineButton() async {
+    if (!goingOnline) {
+      setState(() {
+        goingOnline = true;
+      });
+
+      await Get.find<RideController>().changeDriverRideStatus(x: 0, y: 0);
+
+      setState(() {
+        goingOnline = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -112,7 +133,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     // double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: primaryColorWhite,
@@ -132,6 +153,15 @@ class _MapScreenState extends State<MapScreen> {
       body: SafeArea(
         child: Stack(
           children: [
+            SecondaryButtonWithIcon(
+              icon: Icons.online_prediction,
+              iconColor: primaryColorWhite,
+              onPressed: () {},
+              text: "Go Online",
+              boxColor: primaryColorDark,
+              shadowColor: primaryColorDark,
+              width: width,
+            ),
             Column(
               children: [
                 Expanded(
@@ -258,6 +288,28 @@ class _MapScreenState extends State<MapScreen> {
                         comment: comment,
                       )
                     : Container(),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SecondaryButtonWithIcon(
+                  loading: goingOnline,
+                  icon: Get.find<UserController>().driver.value.status ==
+                          DriverState.ONLINE
+                      ? Icons.cloud_off_outlined
+                      : Icons.online_prediction,
+                  iconColor: primaryColorWhite,
+                  onPressed: goOnlineButton,
+                  text: Get.find<UserController>().driver.value.status ==
+                          DriverState.ONLINE
+                      ? "Go Offline"
+                      : "Go Online",
+                  boxColor: primaryColorDark,
+                  shadowColor: primaryColorDark,
+                  width: width,
+                ),
+              ),
+            ),
           ],
         ),
       ),

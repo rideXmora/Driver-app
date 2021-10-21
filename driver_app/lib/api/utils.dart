@@ -70,6 +70,38 @@ Future<Map<dynamic, dynamic>> postRequest(
   }
 }
 
+Future<Map<dynamic, dynamic>> putRequest(
+    {required String url,
+    required Map<String, dynamic> data,
+    required String token}) async {
+  try {
+    var completeUrl = Uri.http(BASEURL, url);
+    var jsonEncodedData = jsonEncode(data);
+    var response;
+    if (token == "") {
+      response = await http.put(completeUrl,
+          headers: {"Content-Type": "application/json"}, body: jsonEncodedData);
+    } else {
+      response = await http.put(completeUrl,
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncodedData);
+    }
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return generateSuccessOutput(response);
+    } else {
+      return generateErrorOutput(jsonDecode(response.body));
+    }
+  } catch (error) {
+    Get.snackbar("Something is wrong" + "!!!", "Please try again");
+    debugPrint("try catch Error : " + error.toString());
+    return {"error": true};
+  }
+}
+
 // export const putRequest = async (url, data, headers = {}) => {
 // 	try {
 // 		let response = (data) ? await axios.put(url, data, headers) : await axios.put(url, headers);
