@@ -31,13 +31,17 @@ class Driver {
     this.totalIncome = 0,
     this.sessionIncome = 0,
     required this.driverOrganization,
-    this.state = DriverState.OFFLINE,
+    this.status = DriverState.OFFLINE,
   });
 
   String id;
   String phone;
   String email;
   String name;
+  String city;
+  String drivingLicense;
+  int totalIncome;
+  int sessionIncome;
   int totalRating;
   int totalRides;
   List<String> pastRides;
@@ -46,12 +50,8 @@ class Driver {
   bool enabled;
   bool suspend;
   Vehicle vehicle;
-  String city;
-  String drivingLicense;
-  int totalIncome;
-  int sessionIncome;
   Organization driverOrganization;
-  DriverState state;
+  DriverState status;
 
   factory Driver.fromJson(Map<dynamic, dynamic> json) => Driver(
         id: json["id"],
@@ -71,7 +71,7 @@ class Driver {
         totalIncome: json["totalIncome"],
         sessionIncome: json["sessionIncome"],
         driverOrganization: json["driverOrganization"],
-        state: json["state"],
+        status: json["status"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -92,6 +92,6 @@ class Driver {
         "totalIncome": totalIncome,
         "sessionIncome": sessionIncome,
         "driverOrganization": driverOrganization,
-        "state": state,
+        "status": status,
       };
 }
