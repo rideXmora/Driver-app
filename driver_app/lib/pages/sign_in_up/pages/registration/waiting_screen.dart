@@ -1,3 +1,4 @@
+import 'package:driver_app/pages/sign_in_up/pages/getting_started_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/driving_license_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/profile_pic_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/revenue_license_upload_screen.dart';
@@ -10,10 +11,13 @@ import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/main_button.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class WaitingScreen extends StatefulWidget {
-  WaitingScreen({Key? key}) : super(key: key);
+  WaitingScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _WaitingScreenState createState() => _WaitingScreenState();
@@ -44,7 +48,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                CustomBackButton(),
+                CustomBackButton(
+                  onTap: () {
+                    Get.offAll(GettingStartedScreen());
+                  },
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

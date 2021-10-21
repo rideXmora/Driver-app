@@ -1,5 +1,6 @@
 import 'package:driver_app/controllers/auth_controller.dart';
 import 'package:driver_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
+import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,7 +89,11 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CustomBackButton(),
+                  CustomBackButton(
+                    onTap: () {
+                      Get.offAll(WelcomeScreen());
+                    },
+                  ),
                   SizedBox(
                     height: 30,
                   ),
@@ -163,7 +168,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                               });
                             },
                             dropdownColor: primaryColorLight,
-                            items: <String>['+94', '+34']
+                            items: <String>['+94']
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
