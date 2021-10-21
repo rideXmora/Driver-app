@@ -44,7 +44,7 @@ class _BottomNavHandlerState extends State<BottomNavHandler> {
       extendBody: true,
       body: pages[secondIndex],
       bottomNavigationBar: Container(
-        height: 70,
+        height: 73,
         child: ClipRRect(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(17),
