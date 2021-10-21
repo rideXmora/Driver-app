@@ -1,3 +1,6 @@
+import 'package:driver_app/controllers/auth_controller.dart';
+import 'package:driver_app/controllers/user_controller.dart';
+import 'package:driver_app/modals/vehicle.dart';
 import 'package:driver_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/driving_license_upload_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/uploading_screens/profile_pic_upload_screen.dart';
@@ -12,6 +15,7 @@ import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/main_button.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class DocumentationScreen extends StatefulWidget {
   DocumentationScreen({Key? key}) : super(key: key);
@@ -49,6 +53,31 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
     },
   ];
   bool loading = false;
+
+  void onSubmitButton() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      Vehicle vehicle = Get.find<UserController>().driver.value.vehicle;
+
+      await Get.find<AuthController>().registrationComplete(
+        vehicle: Vehicle(
+          number: vehicle.number,
+          vehicleType: vehicle.vehicleType,
+          model: vehicle.model,
+          license: vehicle.license,
+          insurance: vehicle.insurance,
+          vehicleRegNo: vehicle.vehicleRegNo,
+        ),
+      );
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -112,30 +141,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                   loading: loading,
                   width: width,
                   height: height,
-                  onPressed: () async {
-                    if (!loading) {
-                      setState(() {
-                        loading = true;
-                      });
-//submitOTP();
-                      Future.delayed(Duration(seconds: 3)).then((value) {
-                        setState(() {
-                          loading = false;
-                        });
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             WaitingScreen()));
-
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    BottomNavHandler()));
-                      });
-                    }
-                  },
+                  onPressed: onSubmitButton,
                   text: "DONE",
                   boxColor: primaryColorDark,
                   shadowColor: primaryColorDark,

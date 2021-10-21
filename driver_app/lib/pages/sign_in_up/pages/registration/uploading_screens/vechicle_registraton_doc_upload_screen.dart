@@ -1,3 +1,5 @@
+import 'package:driver_app/controllers/user_controller.dart';
+import 'package:driver_app/modals/vehicle.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/documentation_screen.dart';
 import 'package:driver_app/pages/sign_in_up/widgets/ducument_box.dart';
 import 'package:flutter/gestures.dart';
@@ -6,6 +8,7 @@ import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/main_button.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class VechicleRegistratonDocUploadScreen extends StatefulWidget {
   VechicleRegistratonDocUploadScreen({Key? key}) : super(key: key);
@@ -37,25 +40,18 @@ class _VechicleRegistratonDocUploadScreenState
           width: width,
           height: height,
           onPressed: () async {
-            if (!loading) {
-              setState(() {
-                loading = true;
-              });
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => DocumentationScreen(),
-                ),
+            Vehicle vehicle = Get.find<UserController>().driver.value.vehicle;
+            Get.find<UserController>().driver.update((val) {
+              val!.vehicle = Vehicle(
+                number: vehicle.number,
+                vehicleType: vehicle.vehicleType,
+                model: vehicle.model,
+                license: vehicle.license,
+                insurance: vehicle.insurance,
+                vehicleRegNo: "Vehicle Registration",
               );
-              setState(() {
-                loading = false;
-              });
-            } else {
-              setState(() {
-                loading = false;
-              });
-            }
+            });
+            Get.back();
           },
           text: "CONTINUE",
           boxColor: primaryColorDark,
