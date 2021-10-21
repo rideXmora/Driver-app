@@ -19,7 +19,7 @@ class Vehicle {
 
   factory Vehicle.fromJson(Map<dynamic, dynamic> json) => Vehicle(
         number: json["number"],
-        vehicleType: json["vehicleType"],
+        vehicleType: getDriverVehicleType(json["vehicleType"]),
         model: json["model"],
         license: json["license"],
         insurance: json["insurance"],
