@@ -1,4 +1,7 @@
 import 'package:driver_app/api/utils.dart';
+import 'package:driver_app/modals/vehicle.dart';
+import 'package:driver_app/utils/vehicle_type.dart';
+import 'package:flutter/material.dart';
 
 Future<dynamic> phoneAuth({required String phone}) async {
   String url = '/api/auth/driver/phoneAuth';
@@ -40,6 +43,26 @@ Future<dynamic> profileComplete(
       "name": name,
       "city": city,
       "driverOrganization": driverOrganization,
+    },
+    token: token,
+  );
+  return response;
+}
+
+Future<dynamic> addVehicle({
+  required Vehicle vehicle,
+  required String token,
+}) async {
+  String url = '/api/driver/addVehicle';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "number": vehicle.number,
+      "vehicleType": getDriverVehicleTypeString(vehicle.vehicleType),
+      "model": vehicle.model,
+      "license": vehicle.license,
+      "insurance": vehicle.insurance,
+      "vehicleRegNo": vehicle.vehicleRegNo,
     },
     token: token,
   );
