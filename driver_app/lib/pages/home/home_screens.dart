@@ -1,3 +1,4 @@
+import 'package:driver_app/widgets/dialog_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,15 +18,56 @@ class HomeScreens extends StatefulWidget {
 TextEditingController whereController = TextEditingController();
 
 class _HomeScreensState extends State<HomeScreens> {
+  bool dialogBox = false;
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop();
+        debugPrint("as");
+        setState(() {
+          dialogBox = !dialogBox;
+        });
 
         return false;
       },
-      child: MapScreen(),
+      child: Stack(
+        children: [
+          MapScreen(),
+          dialogBox
+              ? DialogBox(
+                  topic: "Do you really want quit?",
+                  loading: loading,
+                  onTap: () {
+                    if (!loading) {
+                      setState(() {
+                        dialogBox = false;
+                      });
+                    }
+                  },
+                  onNo: () {
+                    if (!loading) {
+                      setState(() {
+                        dialogBox = false;
+                      });
+                    }
+                  },
+                  onYes: () async {
+                    if (!loading) {
+                      setState(() {
+                        loading = true;
+                      });
+                      await Future.delayed(Duration(seconds: 2));
+                      SystemNavigator.pop();
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                  },
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 }

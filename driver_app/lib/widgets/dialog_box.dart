@@ -9,11 +9,13 @@ class DialogBox extends StatelessWidget {
     this.onNo,
     this.onTap,
     required this.loading,
+    required this.topic,
   }) : super(key: key);
   final onYes;
   final onNo;
   final onTap;
   final bool loading;
+  final String topic;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,7 +40,7 @@ class DialogBox extends StatelessWidget {
                 children: [
                   Material(
                     child: Text(
-                      "Do you really want to proceed this?",
+                      topic,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 15,

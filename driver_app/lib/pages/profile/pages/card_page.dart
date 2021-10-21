@@ -270,6 +270,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
           ),
           dialogBox
               ? DialogBox(
+                  topic: "Do you really want to proceed this?",
                   loading: loading,
                   onTap: () {
                     if (!loading) {
