@@ -1,0 +1,19 @@
+// enum RideState {
+//   RIDERREQUEST,
+//   ACCEPTED,
+//   ONTRIP,
+//   TRIPCOMPLETED,
+//   RATEANDCOMMENT,
+//   NOTRIP,
+// }
+
+enum RideState {
+  ACCEPTED,
+  ARRIVED,
+  PICKED,
+  DROPPED,
+  RATEANDCOMMENT,
+  FINISHED,
+  CONFIRMED,
+  NOTRIP,
+}
