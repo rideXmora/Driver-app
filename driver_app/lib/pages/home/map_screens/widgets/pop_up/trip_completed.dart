@@ -117,7 +117,7 @@ class TripCompleted extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: 30,
+                                    height: 34,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -142,10 +142,10 @@ class TripCompleted extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 10,
+                                    height: 2,
                                   ),
                                   Container(
-                                    height: 30,
+                                    height: 34,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
