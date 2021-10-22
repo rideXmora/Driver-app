@@ -6,6 +6,7 @@ import 'package:driver_app/modals/passenger.dart';
 import 'package:driver_app/modals/trip.dart';
 import 'package:driver_app/utils/driver_status.dart';
 import 'package:driver_app/utils/payment_method.dart';
+import 'package:driver_app/utils/ride_request_state_enum.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/widgets/secondary_button_with_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,7 @@ import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/ride_fl
 import 'package:driver_app/pages/home/map_screens/widgets/floating_panel/ride_request_floating_panel.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/pop_up/Rate_and_comment.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/pop_up/trip_completed.dart';
-import 'package:driver_app/utils/trip_state_enum.dart';
+import 'package:driver_app/utils/ride_state_enum.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -54,7 +55,8 @@ class _MapScreenState extends State<MapScreen> {
     paymentMethod: PaymentMethod.CASH,
   );
 
-  TripState tripState = TripState.NOTRIP;
+  RideState rideState = RideState.NOTRIP;
+  RideRequestState rideRequest = RideRequestState.NOTRIP;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
@@ -80,7 +82,7 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
   }
 
-  Widget _floatingCollapsed(TripState state) {
+  Widget _floatingCollapsed(RideState state, RideRequestState rideRequest) {
     return Container(
       decoration: BoxDecoration(
         color: primaryColorDark,
@@ -109,13 +111,15 @@ class _MapScreenState extends State<MapScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    state == TripState.RIDERREQUEST
+                    rideRequest == RideRequestState.PENDING
                         ? "New ride request"
-                        : state == TripState.ACCEPTED
+                        : state == RideState.ACCEPTED
                             ? "Accepted"
-                            : state == TripState.ONTRIP
-                                ? "On trip"
-                                : "",
+                            : state == RideState.ARRIVED
+                                ? "Arrived"
+                                : state == RideState.PICKED
+                                    ? "On Trip"
+                                    : "",
                     style: TextStyle(
                       color: primaryColorWhite,
                       fontSize: 18,
@@ -129,6 +133,76 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
     );
+  }
+
+  void pendingOnPressedAccept() {
+    setState(() {
+      rideRequest = RideRequestState.ACCEPTED;
+      rideState = RideState.ACCEPTED;
+    });
+  }
+
+  void pendingOnPressedReject() {
+    setState(() {
+      rideRequest = RideRequestState.NOTRIP;
+      rideState = RideState.NOTRIP;
+    });
+  }
+
+  void acceptedOnPressedAccept() {
+    setState(() {
+      rideState = RideState.ARRIVED;
+    });
+  }
+
+  void acceptedOnPressedReject() {
+    setState(() {
+      rideRequest = RideRequestState.NOTRIP;
+      rideState = RideState.NOTRIP;
+    });
+  }
+
+  void arrivedOnPressedAccept() {
+    setState(() {
+      rideState = RideState.PICKED;
+    });
+  }
+
+  void arrivedOnPressedReject() {
+    setState(() {
+      rideRequest = RideRequestState.NOTRIP;
+      rideState = RideState.NOTRIP;
+    });
+  }
+
+  void pickedOnPressedAccept() {
+    setState(() {
+      rideState = RideState.DROPPED;
+    });
+  }
+
+  void pickedOnPressedReject() {
+    setState(() {
+      rideRequest = RideRequestState.NOTRIP;
+      rideState = RideState.NOTRIP;
+    });
+  }
+
+  void tripCompletedOnPressed() {
+    setState(() {
+      rideState = RideState.RATEANDCOMMENT;
+    });
+  }
+
+  void rateAndCommentOnPressed() {
+    setState(() {
+      rideState = RideState.FINISHED;
+      rideState = RideState.CONFIRMED;
+      rideState = RideState.NOTRIP;
+      rideRequest = RideRequestState.NOTRIP;
+      rating = 0;
+      comment.text = "";
+    });
   }
 
   @override
@@ -153,15 +227,6 @@ class _MapScreenState extends State<MapScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            SecondaryButtonWithIcon(
-              icon: Icons.online_prediction,
-              iconColor: primaryColorWhite,
-              onPressed: () {},
-              text: "Go Online",
-              boxColor: primaryColorDark,
-              shadowColor: primaryColorDark,
-              width: width,
-            ),
             Column(
               children: [
                 Expanded(
@@ -175,90 +240,67 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            tripState == TripState.RIDERREQUEST ||
-                    tripState == TripState.ACCEPTED ||
-                    tripState == TripState.ONTRIP
+            rideRequest == RideRequestState.PENDING ||
+                    rideState == RideState.ACCEPTED ||
+                    rideState == RideState.ARRIVED ||
+                    rideState == RideState.PICKED
                 ? SlidingUpPanel(
                     renderPanelSheet: false,
-                    panel: tripState == TripState.RIDERREQUEST
+                    panel: rideRequest == RideRequestState.PENDING
                         ? RideRequestFloatingPanel(
                             loading: loading,
                             passenger: passenger,
                             trip: trip,
-                            onPressedAccept: () {
-                              setState(() {
-                                tripState = TripState.ACCEPTED;
-                              });
-                            },
-                            onPressedReject: () {
-                              setState(() {
-                                tripState = TripState.NOTRIP;
-                              });
-                            },
+                            onPressedAccept: pendingOnPressedAccept,
+                            onPressedReject: pendingOnPressedReject,
                           )
-                        : tripState == TripState.ACCEPTED
+                        : rideState == RideState.ACCEPTED
                             ? RideFloatingPanel(
-                                tripState: tripState,
+                                rideState: rideState,
                                 loading: loading,
                                 passenger: passenger,
                                 trip: trip,
-                                onPressedAccept: () {
-                                  setState(() {
-                                    tripState = TripState.ONTRIP;
-                                  });
-                                },
-                                onPressedReject: () {
-                                  setState(() {
-                                    tripState = TripState.NOTRIP;
-                                  });
-                                },
+                                onPressedAccept: acceptedOnPressedAccept,
+                                onPressedReject: acceptedOnPressedReject,
                               )
-                            : tripState == TripState.ONTRIP
+                            : rideState == RideState.ARRIVED
                                 ? RideFloatingPanel(
-                                    tripState: tripState,
+                                    rideState: rideState,
                                     loading: loading,
                                     passenger: passenger,
                                     trip: trip,
-                                    onPressedAccept: () {
-                                      setState(() {
-                                        tripState = TripState.TRIPCOMPLETED;
-                                      });
-                                    },
-                                    onPressedReject: () {
-                                      setState(() {
-                                        tripState = TripState.NOTRIP;
-                                      });
-                                    },
+                                    onPressedAccept: arrivedOnPressedAccept,
+                                    onPressedReject: arrivedOnPressedReject,
                                   )
-                                : Container(),
-                    collapsed: _floatingCollapsed(tripState),
+                                : rideState == RideState.PICKED
+                                    ? RideFloatingPanel(
+                                        rideState: rideState,
+                                        loading: loading,
+                                        passenger: passenger,
+                                        trip: trip,
+                                        onPressedAccept: pickedOnPressedAccept,
+                                        onPressedReject: pickedOnPressedReject,
+                                      )
+                                    : Container(),
+                    collapsed: _floatingCollapsed(rideState, rideRequest),
                     backdropColor: Colors.transparent,
                     defaultPanelState: PanelState.OPEN,
-                    maxHeight: tripState == TripState.ACCEPTED ||
-                            tripState == TripState.ONTRIP
+                    maxHeight: rideState == RideState.ACCEPTED ||
+                            rideState == RideState.ARRIVED ||
+                            rideState == RideState.PICKED
                         ? 320
                         : 360,
                   )
                 : Container(),
-            tripState == TripState.TRIPCOMPLETED
+            rideState == RideState.DROPPED
                 ? TripCompleted(
                     loading: loading,
-                    onPressed: () {
-                      setState(() {
-                        tripState = TripState.RATEANDCOMMENT;
-                      });
-                    },
+                    onPressed: tripCompletedOnPressed,
                   )
-                : tripState == TripState.RATEANDCOMMENT
+                : rideState == RideState.RATEANDCOMMENT
                     ? RateAndComment(
                         loading: loading,
-                        onPressed: () {
-                          setState(() {
-                            tripState = TripState.NOTRIP;
-                            rating = 0;
-                            comment.text = "";
-                          });
-                        },
+                        onPressed: rateAndCommentOnPressed,
                         rating: rating,
                         onRatingChanged1: () {
                           setState(() {
@@ -290,24 +332,44 @@ class _MapScreenState extends State<MapScreen> {
                     : Container(),
             Align(
               alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: SecondaryButtonWithIcon(
-                  loading: goingOnline,
-                  icon: Get.find<UserController>().driver.value.status ==
-                          DriverState.ONLINE
-                      ? Icons.cloud_off_outlined
-                      : Icons.online_prediction,
-                  iconColor: primaryColorWhite,
-                  onPressed: goOnlineButton,
-                  text: Get.find<UserController>().driver.value.status ==
-                          DriverState.ONLINE
-                      ? "Go Offline"
-                      : "Go Online",
-                  boxColor: primaryColorDark,
-                  shadowColor: primaryColorDark,
-                  width: width,
-                ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SecondaryButtonWithIcon(
+                      loading: goingOnline,
+                      icon: Get.find<UserController>().driver.value.status ==
+                              DriverState.ONLINE
+                          ? Icons.cloud_off_outlined
+                          : Icons.online_prediction,
+                      iconColor: primaryColorWhite,
+                      onPressed: goOnlineButton,
+                      text: Get.find<UserController>().driver.value.status ==
+                              DriverState.ONLINE
+                          ? "Go Offline"
+                          : "Go Online",
+                      boxColor: primaryColorDark,
+                      shadowColor: primaryColorDark,
+                      width: width,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SecondaryButtonWithIcon(
+                      icon: Icons.online_prediction,
+                      iconColor: primaryColorWhite,
+                      onPressed: () {
+                        setState(() {
+                          rideRequest = RideRequestState.PENDING;
+                        });
+                      },
+                      text: "get ride",
+                      boxColor: primaryColorDark,
+                      shadowColor: primaryColorDark,
+                      width: width,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

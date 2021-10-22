@@ -4,7 +4,7 @@ import 'package:driver_app/widgets/secondary_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/modals/driver.dart';
-import 'package:driver_app/utils/trip_state_enum.dart';
+import 'package:driver_app/utils/ride_state_enum.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/secondary_button_with_icon.dart';
 import 'package:driver_app/widgets/simple_icon_text_box.dart';
@@ -15,7 +15,7 @@ class RideFloatingPanel extends StatelessWidget {
     required this.loading,
     required this.passenger,
     required this.trip,
-    required this.tripState,
+    required this.rideState,
     this.onPressedAccept,
     this.onPressedReject,
   }) : super(key: key);
@@ -23,7 +23,7 @@ class RideFloatingPanel extends StatelessWidget {
   final onPressedAccept;
   final onPressedReject;
   final Passenger passenger;
-  final TripState tripState;
+  final RideState rideState;
   final bool loading;
   final Trip trip;
 
@@ -53,11 +53,13 @@ class RideFloatingPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              tripState == TripState.ACCEPTED
+              rideState == RideState.ACCEPTED
                   ? "Accepted"
-                  : tripState == TripState.ONTRIP
-                      ? "On trip"
-                      : "",
+                  : rideState == RideState.ARRIVED
+                      ? "Arrived"
+                      : rideState == RideState.PICKED
+                          ? "On trip"
+                          : "",
               style: TextStyle(
                 color: primaryColorBlack,
                 fontSize: 18,
@@ -214,7 +216,7 @@ class RideFloatingPanel extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: 30,
+                            height: 34,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -238,10 +240,10 @@ class RideFloatingPanel extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 2,
                           ),
                           Container(
-                            height: 30,
+                            height: 34,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -292,9 +294,9 @@ class RideFloatingPanel extends StatelessWidget {
                   child: Container(),
                 ),
                 Expanded(
-                  flex: 10,
+                  flex: 11,
                   child: SecondaryButton(
-                    width: MediaQuery.of(context).size.width * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.42,
                     onPressed: onPressedReject,
                     loading: loading,
                     text: "Cancel Ride",
