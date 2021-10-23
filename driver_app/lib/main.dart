@@ -1,8 +1,13 @@
 import 'dart:ui';
 
+import 'package:driver_app/pages/splash_screen.dart';
 import 'package:driver_app/theme/colors.dart';
+import 'package:driver_app/utils/local_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+
+import 'controllers/app_binding.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -19,7 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'RideX Driver',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -28,35 +33,10 @@ class MyApp extends StatelessWidget {
         primaryColorLight: primaryColorLight,
         backgroundColor: primaryColorWhite,
       ),
-      // initialBinding: AppBinding(),
-      // home: SplashScreen(),
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Welcome to RideX Driver APP"),
-      ),
-      body: Center(
-          child: Text(
-        "RideX Driver",
-        style: TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.w700,
-        ),
-      )),
+      translations: LocalString(),
+      locale: Locale('en', 'US'),
+      initialBinding: AppBinding(),
+      home: SplashScreen(),
     );
   }
 }
