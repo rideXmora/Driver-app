@@ -43,11 +43,17 @@ class SecondaryButtonWithIcon extends StatelessWidget {
       // ignore: deprecated_member_use
       child: RaisedButton(
         child: loading
-            ? Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(primaryColorWhite),
-                ),
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(primaryColorWhite),
+                    ),
+                  ),
+                ],
               )
             : Row(
                 mainAxisAlignment: text != ""
