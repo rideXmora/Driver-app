@@ -135,7 +135,21 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void pendingOnPressedAccept() {
+  void pendingOnPressedAccept() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+      bool result = await Get.find<RideController>().rideRequestAccepting();
+      // if (result) {
+      //   setState(() {
+      //     rideRequest = RideRequestState.PENDING;
+      //   });
+      // }
+      setState(() {
+        loading = false;
+      });
+    }
     setState(() {
       rideRequest = RideRequestState.ACCEPTED;
       rideState = RideState.ACCEPTED;
