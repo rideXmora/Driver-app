@@ -13,16 +13,22 @@ class RideRequestFloatingPanel extends StatelessWidget {
     Key? key,
     required this.trip,
     required this.passenger,
-    required this.loading,
+    required this.loadingGreen,
+    required this.loadingRed,
     this.onPressedAccept,
     this.onPressedReject,
+    required this.greenTopic,
+    required this.redTopic,
   }) : super(key: key);
 
   final onPressedAccept;
   final onPressedReject;
   final Passenger passenger;
-  final bool loading;
+  final bool loadingGreen;
+  final bool loadingRed;
   final Trip trip;
+  final String greenTopic;
+  final String redTopic;
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +153,8 @@ class RideRequestFloatingPanel extends StatelessWidget {
                   child: SecondaryButton(
                     width: MediaQuery.of(context).size.width * 0.4,
                     onPressed: onPressedAccept,
-                    loading: loading,
-                    text: "Accept",
+                    loading: loadingGreen,
+                    text: greenTopic,
                     boxColor: primaryColorLight,
                     shadowColor: Colors.transparent,
                   ),
@@ -162,8 +168,8 @@ class RideRequestFloatingPanel extends StatelessWidget {
                   child: SecondaryButton(
                     width: MediaQuery.of(context).size.width * 0.4,
                     onPressed: onPressedReject,
-                    loading: loading,
-                    text: "Reject",
+                    loading: loadingRed,
+                    text: redTopic,
                     boxColor: Color(0xFFD7A7A7),
                     shadowColor: Colors.transparent,
                   ),

@@ -13,8 +13,8 @@ class AppBinding extends Bindings {
     Get.lazyPut<Controller>(() => Controller());
     Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<MapController>(() => MapController());
-    Get.lazyPut<RideController>(() => RideController());
-    Get.put(UserController());
+    Get.lazyPut<UserController>(() => UserController());
+    Get.put(RideController());
     Get.put(OrganizationController());
   }
 }

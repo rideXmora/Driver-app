@@ -35,6 +35,10 @@ class UserController extends GetxController {
     });
   }
 
+  void signOutUser() {
+    clearData();
+  }
+
   void saveDriverData(dynamic data) {
     DriverState driverState = getDriverState(
         data["status"] == null ? DriverState.OFFLINE : data["status"]);

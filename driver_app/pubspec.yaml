@@ -46,6 +46,7 @@ dependencies:
   http: ^0.13.3
   shared_preferences:
   jwt_decoder: ^2.0.1
+  stomp: ^0.8.0
 
 dev_dependencies:
   flutter_test:

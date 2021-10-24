@@ -38,6 +38,8 @@ final CameraPosition _kGooglePlex = CameraPosition(
 
 class _MapScreenState extends State<MapScreen> {
   bool loading = false;
+  bool loadingGreen = false;
+  bool loadingRed = false;
 
   Passenger passenger = Passenger(
     image: "assets/images/images/user_icon.png",
@@ -135,88 +137,206 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void pendingOnPressedAccept() async {
-    if (!loading) {
+  void pendingOnPressedToAccept() async {
+    if (!loadingGreen) {
       setState(() {
-        loading = true;
+        loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestAccepting();
-      // if (result) {
-      //   setState(() {
-      //     rideRequest = RideRequestState.PENDING;
-      //   });
-      // }
+      if (result) {
+        setState(() {
+          rideRequest = RideRequestState.ACCEPTED;
+          rideState = RideState.ACCEPTED;
+        });
+      }
       setState(() {
-        loading = false;
+        loadingGreen = false;
       });
     }
-    setState(() {
-      rideRequest = RideRequestState.ACCEPTED;
-      rideState = RideState.ACCEPTED;
-    });
   }
 
-  void pendingOnPressedReject() {
-    setState(() {
-      rideRequest = RideRequestState.NOTRIP;
-      rideState = RideState.NOTRIP;
-    });
+  void pendingOnPressedToReject() {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      //reset ride object
+      setState(() {
+        rideRequest = RideRequestState.NOTRIP;
+        rideState = RideState.NOTRIP;
+      });
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
-  void acceptedOnPressedAccept() {
-    setState(() {
-      rideState = RideState.ARRIVED;
-    });
+  void acceptedOnPressedToArrive() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideArriving();
+      if (result) {
+        setState(() {
+          rideState = RideState.ARRIVED;
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void acceptedOnPressedReject() {
-    setState(() {
-      rideRequest = RideRequestState.NOTRIP;
-      rideState = RideState.NOTRIP;
-    });
+  void acceptedOnPressedToCancel() {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      //reset ride object
+      setState(() {
+        rideRequest = RideRequestState.NOTRIP;
+        rideState = RideState.NOTRIP;
+      });
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
-  void arrivedOnPressedAccept() {
-    setState(() {
-      rideState = RideState.PICKED;
-    });
+  void arrivedOnPressedToPicked() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().ridePicked();
+      if (result) {
+        setState(() {
+          rideState = RideState.PICKED;
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void arrivedOnPressedReject() {
-    setState(() {
-      rideRequest = RideRequestState.NOTRIP;
-      rideState = RideState.NOTRIP;
-    });
+  void arrivedOnPressedToCancel() {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      //reset ride object
+      setState(() {
+        rideRequest = RideRequestState.NOTRIP;
+        rideState = RideState.NOTRIP;
+      });
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
-  void pickedOnPressedAccept() {
-    setState(() {
-      rideState = RideState.DROPPED;
-    });
+  void pickedOnPressedToDropped() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideDropped();
+      if (result) {
+        setState(() {
+          rideState = RideState.DROPPED;
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void pickedOnPressedReject() {
-    setState(() {
-      rideRequest = RideRequestState.NOTRIP;
-      rideState = RideState.NOTRIP;
-    });
+  void pickedOnPressedToCancel() {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      //reset ride object
+      setState(() {
+        rideRequest = RideRequestState.NOTRIP;
+        rideState = RideState.NOTRIP;
+      });
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
-  void tripCompletedOnPressed() {
-    setState(() {
-      rideState = RideState.RATEANDCOMMENT;
-    });
+  void tripCompletedOnPressed() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().doPayment();
+      if (result) {
+        setState(() {
+          rideState = RideState.RATEANDCOMMENT;
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void rateAndCommentOnPressed() {
-    setState(() {
-      rideState = RideState.FINISHED;
-      rideState = RideState.CONFIRMED;
-      rideState = RideState.NOTRIP;
-      rideRequest = RideRequestState.NOTRIP;
-      rating = 0;
-      comment.text = "";
-    });
+  void rateAndCommentOnPressed() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideFinished(
+        driverFeedback: "new feedback",
+        passengerRating: 3,
+        waitingTime: 5,
+      );
+      if (result) {
+        setState(() {
+          rideState = RideState.FINISHED;
+          rideState = RideState.CONFIRMED;
+          rideState = RideState.NOTRIP;
+          rideRequest = RideRequestState.NOTRIP;
+          rating = 0;
+          comment.text = "";
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
+  }
+
+  void rateAndCommentOnCancel() async {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      bool result = await Get.find<RideController>().rideFinished(
+        driverFeedback: "",
+        passengerRating: 0,
+        waitingTime: 5,
+      );
+      if (result) {
+        setState(() {
+          rideState = RideState.FINISHED;
+          rideState = RideState.CONFIRMED;
+          rideState = RideState.NOTRIP;
+          rideRequest = RideRequestState.NOTRIP;
+          rating = 0;
+          comment.text = "";
+        });
+      }
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
   @override
@@ -262,38 +382,55 @@ class _MapScreenState extends State<MapScreen> {
                     renderPanelSheet: false,
                     panel: rideRequest == RideRequestState.PENDING
                         ? RideRequestFloatingPanel(
-                            loading: loading,
+                            greenTopic: "Accept",
+                            loadingGreen: loadingGreen,
+                            redTopic: "Reject",
+                            loadingRed: loadingRed,
                             passenger: passenger,
                             trip: trip,
-                            onPressedAccept: pendingOnPressedAccept,
-                            onPressedReject: pendingOnPressedReject,
+                            onPressedAccept: pendingOnPressedToAccept,
+                            onPressedReject: pendingOnPressedToReject,
                           )
                         : rideState == RideState.ACCEPTED
                             ? RideFloatingPanel(
+                                heading: "Accepted",
                                 rideState: rideState,
-                                loading: loading,
+                                greenTopic: "Arrived",
+                                loadingGreen: loadingGreen,
+                                redTopic: "Cancel",
+                                loadingRed: loadingRed,
                                 passenger: passenger,
                                 trip: trip,
-                                onPressedAccept: acceptedOnPressedAccept,
-                                onPressedReject: acceptedOnPressedReject,
+                                onPressedAccept: acceptedOnPressedToArrive,
+                                onPressedReject: acceptedOnPressedToCancel,
                               )
                             : rideState == RideState.ARRIVED
                                 ? RideFloatingPanel(
+                                    heading: "Arrived",
                                     rideState: rideState,
-                                    loading: loading,
+                                    greenTopic: "Picked",
+                                    loadingGreen: loadingGreen,
+                                    redTopic: "Cancel",
+                                    loadingRed: loadingRed,
                                     passenger: passenger,
                                     trip: trip,
-                                    onPressedAccept: arrivedOnPressedAccept,
-                                    onPressedReject: arrivedOnPressedReject,
+                                    onPressedAccept: arrivedOnPressedToPicked,
+                                    onPressedReject: arrivedOnPressedToCancel,
                                   )
                                 : rideState == RideState.PICKED
                                     ? RideFloatingPanel(
+                                        heading: "Picked",
                                         rideState: rideState,
-                                        loading: loading,
+                                        greenTopic: "Dropped",
+                                        loadingGreen: loadingGreen,
+                                        redTopic: "Cancel",
+                                        loadingRed: loadingRed,
                                         passenger: passenger,
                                         trip: trip,
-                                        onPressedAccept: pickedOnPressedAccept,
-                                        onPressedReject: pickedOnPressedReject,
+                                        onPressedAccept:
+                                            pickedOnPressedToDropped,
+                                        onPressedReject:
+                                            pickedOnPressedToCancel,
                                       )
                                     : Container(),
                     collapsed: _floatingCollapsed(rideState, rideRequest),
@@ -308,13 +445,17 @@ class _MapScreenState extends State<MapScreen> {
                 : Container(),
             rideState == RideState.DROPPED
                 ? TripCompleted(
-                    loading: loading,
+                    loading: loadingGreen,
                     onPressed: tripCompletedOnPressed,
                   )
                 : rideState == RideState.RATEANDCOMMENT
                     ? RateAndComment(
-                        loading: loading,
+                        greenTopic: "Submit",
+                        loadingGreen: loadingGreen,
+                        redTopic: "Cancel",
+                        loadingRed: loadingRed,
                         onPressed: rateAndCommentOnPressed,
+                        onCancel: rateAndCommentOnCancel,
                         rating: rating,
                         onRatingChanged1: () {
                           setState(() {

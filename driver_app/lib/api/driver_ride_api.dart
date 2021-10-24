@@ -81,8 +81,8 @@ Future<dynamic> dropped({
 
 Future<dynamic> finished({
   required String id,
-  required String passengerFeedback,
-  required int driverRating,
+  required String driverFeedback,
+  required int passengerRating,
   required int waitingTime,
   required String token,
 }) async {
@@ -91,8 +91,8 @@ Future<dynamic> finished({
     url: url,
     data: {
       "id": id,
-      "passengerFeedback": passengerFeedback,
-      "driverRating": driverRating,
+      "driverFeedback": driverFeedback,
+      "passengerRating": passengerRating,
       "waitingTime": waitingTime,
     },
     token: token,

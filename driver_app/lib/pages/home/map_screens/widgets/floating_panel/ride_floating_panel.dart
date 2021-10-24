@@ -12,20 +12,28 @@ import 'package:driver_app/widgets/simple_icon_text_box.dart';
 class RideFloatingPanel extends StatelessWidget {
   RideFloatingPanel({
     Key? key,
-    required this.loading,
     required this.passenger,
     required this.trip,
     required this.rideState,
+    required this.loadingGreen,
+    required this.loadingRed,
     this.onPressedAccept,
     this.onPressedReject,
+    required this.greenTopic,
+    required this.redTopic,
+    required this.heading,
   }) : super(key: key);
 
   final onPressedAccept;
   final onPressedReject;
   final Passenger passenger;
   final RideState rideState;
-  final bool loading;
+  final bool loadingGreen;
+  final bool loadingRed;
   final Trip trip;
+  final String greenTopic;
+  final String redTopic;
+  final String heading;
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +61,7 @@ class RideFloatingPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              rideState == RideState.ACCEPTED
-                  ? "Accepted"
-                  : rideState == RideState.ARRIVED
-                      ? "Arrived"
-                      : rideState == RideState.PICKED
-                          ? "On trip"
-                          : "",
+              heading,
               style: TextStyle(
                 color: primaryColorBlack,
                 fontSize: 18,
@@ -283,8 +285,8 @@ class RideFloatingPanel extends StatelessWidget {
                   child: SecondaryButton(
                     width: MediaQuery.of(context).size.width * 0.4,
                     onPressed: onPressedAccept,
-                    loading: loading,
-                    text: "Accept",
+                    loading: loadingGreen,
+                    text: greenTopic,
                     boxColor: primaryColorLight,
                     shadowColor: Colors.transparent,
                   ),
@@ -298,8 +300,8 @@ class RideFloatingPanel extends StatelessWidget {
                   child: SecondaryButton(
                     width: MediaQuery.of(context).size.width * 0.42,
                     onPressed: onPressedReject,
-                    loading: loading,
-                    text: "Cancel Ride",
+                    loading: loadingRed,
+                    text: redTopic,
                     boxColor: Color(0xFFD7A7A7),
                     shadowColor: Colors.transparent,
                   ),
