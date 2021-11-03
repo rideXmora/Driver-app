@@ -5,6 +5,7 @@ import 'package:driver_app/modals/driver.dart';
 import 'package:driver_app/modals/organization.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/selecting_vchicle_type.dart';
 import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
+import 'package:driver_app/utils/firebase_notification_handler.dart';
 import 'package:driver_app/widgets/circular_loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

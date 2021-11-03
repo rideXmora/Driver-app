@@ -32,6 +32,7 @@ class Driver {
     this.sessionIncome = 0,
     required this.driverOrganization,
     this.status = DriverState.OFFLINE,
+    this.notificationToken = "",
   });
 
   String id;
@@ -52,6 +53,7 @@ class Driver {
   Vehicle vehicle;
   Organization driverOrganization;
   DriverState status;
+  String notificationToken;
 
   factory Driver.fromJson(Map<dynamic, dynamic> json) => Driver(
         id: json["id"],
@@ -72,6 +74,7 @@ class Driver {
         sessionIncome: json["sessionIncome"],
         driverOrganization: json["driverOrganization"],
         status: json["status"],
+        notificationToken: json["notificationToken"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -93,5 +96,6 @@ class Driver {
         "sessionIncome": sessionIncome,
         "driverOrganization": driverOrganization,
         "status": status,
+        "notificationToken": notificationToken,
       };
 }

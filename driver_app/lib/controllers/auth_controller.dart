@@ -11,7 +11,10 @@ import 'package:driver_app/pages/sign_in_up/pages/registration/registration_scre
 import 'package:driver_app/pages/sign_in_up/pages/registration/selecting_vchicle_type.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/waiting_screen.dart';
 import 'package:driver_app/pages/sign_in_up/pages/welcome_screen.dart';
+import 'package:driver_app/utils/firebase_notification_handler.dart';
 import 'package:driver_app/utils/validation.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/api/auth_api.dart';
@@ -21,6 +24,9 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class AuthController extends GetxController {
   // SplashScreen data loading
   Future<void> loadData() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+
     SharedPreferences store = await SharedPreferences.getInstance();
     String token = store.getString("token") == null
         ? ''
@@ -52,6 +58,14 @@ class AuthController extends GetxController {
           Get.offAll(WelcomeScreen());
         } else {
           debugPrint("token not null");
+          try {
+            FirebaseNotifications firebaseNotifications =
+                FirebaseNotifications();
+            await firebaseNotifications.setupFirebase();
+          } catch (e) {
+            debugPrint("firebase notification error");
+            Get.offAll(WelcomeScreen());
+          }
           bool isExpired = await isTokenExpired();
           if (isExpired) {
             debugPrint("token expired refresh need");
@@ -61,12 +75,14 @@ class AuthController extends GetxController {
           } else {
             debugPrint("token valid");
             dynamic response = await profile(token: token);
+            debugPrint("profile grabbed");
             Get.find<UserController>().clearData();
             Get.find<UserController>().updateDriverData(
               response["body"],
               token,
               refreshToken,
             );
+
             if (response["body"]["email"] == null ||
                 response["body"]["vehicle"] == null) {
               debugPrint("new user without registration completed: " +
@@ -128,6 +144,13 @@ class AuthController extends GetxController {
     if (otp.length < 6) {
       Get.snackbar("OTP is not valid!!!", "Otp must have 6 characters");
     } else {
+      try {
+        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
+        await firebaseNotifications.setupFirebase();
+      } catch (e) {
+        Get.snackbar("Something is wrong!!!", "Please try again");
+        return;
+      }
       dynamic response = await phoneVerify(phone: phone, otp: otp);
 
       debugPrint(response["enabled"].toString());
@@ -176,15 +199,26 @@ class AuthController extends GetxController {
     } else if (city.length == 0) {
       Get.snackbar("City is not valid!!!", "City field cannot be empty");
     } else {
+      String notificationToken = "";
+      try {
+        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
+        await firebaseNotifications.setupFirebase();
+        notificationToken = await firebaseNotifications.getToken();
+      } catch (e) {
+        Get.snackbar("Something is wrong!!!", "Please try again");
+        return;
+      }
       dynamic response = await profileComplete(
-          name: name,
-          email: email,
-          city: city,
-          driverOrganization: {
-            "id": driverOrganization.id,
-            "name": driverOrganization.name,
-          },
-          token: Get.find<UserController>().driver.value.token);
+        name: name,
+        email: email,
+        city: city,
+        driverOrganization: {
+          "id": driverOrganization.id,
+          "name": driverOrganization.name,
+        },
+        notificationToken: notificationToken,
+        token: Get.find<UserController>().driver.value.token,
+      );
 
       if (!response["error"]) {
         SharedPreferences store = await SharedPreferences.getInstance();

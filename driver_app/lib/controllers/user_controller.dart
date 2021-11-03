@@ -32,6 +32,7 @@ class UserController extends GetxController {
       val.sessionIncome = 0;
       val.driverOrganization = Organization();
       val.status = DriverState.OFFLINE;
+      val.notificationToken = "";
     });
   }
 
@@ -62,6 +63,8 @@ class UserController extends GetxController {
           ? Organization()
           : Organization.fromJson(data["driverOrganization"]);
       val.status = driverState;
+      val.notificationToken =
+          data["notificationToken"] == null ? "" : data["notificationToken"];
     });
   }
 
@@ -101,6 +104,8 @@ class UserController extends GetxController {
           : Organization.fromJson(data["driverOrganization"]);
 
       val.status = driverState;
+      val.notificationToken =
+          data["notificationToken"] == null ? "" : data["notificationToken"];
     });
   }
 
@@ -130,5 +135,9 @@ class UserController extends GetxController {
         Get.to(() => DocumentationScreen());
       }
     }
+  }
+
+  void updateNotificationToken(String token) {
+    driver.value.notificationToken = token;
   }
 }
