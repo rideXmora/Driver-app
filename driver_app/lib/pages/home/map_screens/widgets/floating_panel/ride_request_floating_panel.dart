@@ -1,4 +1,5 @@
 import 'package:driver_app/modals/passenger.dart';
+import 'package:driver_app/modals/ride_request_passenger.dart';
 import 'package:driver_app/modals/trip.dart';
 import 'package:driver_app/pages/home/map_screens/widgets/smooth_star_rating.dart';
 import 'package:driver_app/widgets/simple_icon_text_box.dart';
@@ -23,7 +24,7 @@ class RideRequestFloatingPanel extends StatelessWidget {
 
   final onPressedAccept;
   final onPressedReject;
-  final Passenger passenger;
+  final RideRequestPassenger passenger;
   final bool loadingGreen;
   final bool loadingRed;
   final Trip trip;
@@ -71,7 +72,8 @@ class RideRequestFloatingPanel extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage(passenger.image),
+                  //TODO
+                  image: AssetImage("assets/images/images/user_icon.png"),
                 ),
               ),
             ),

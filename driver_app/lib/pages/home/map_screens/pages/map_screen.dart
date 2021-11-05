@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:driver_app/api/notification_api.dart';
+import 'package:driver_app/controllers/notification_controller.dart';
 import 'package:driver_app/controllers/ride_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/passenger.dart';
 import 'package:driver_app/modals/trip.dart';
 import 'package:driver_app/utils/driver_status.dart';
+import 'package:driver_app/utils/firebase_notification_handler.dart';
 import 'package:driver_app/utils/payment_method.dart';
 import 'package:driver_app/utils/ride_request_state_enum.dart';
 import 'package:get/get.dart';
@@ -57,34 +60,20 @@ class _MapScreenState extends State<MapScreen> {
     paymentMethod: PaymentMethod.CASH,
   );
 
-  RideState rideState = RideState.NOTRIP;
-  RideRequestState rideRequest = RideRequestState.NOTRIP;
+  //RideState rideState = RideState.NOTRIP;
+  //RideRequestState rideRequest = RideRequestState.NOTRIP;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
 
   bool goingOnline = false;
 
-  Future<void> goOnlineButton() async {
-    if (!goingOnline) {
-      setState(() {
-        goingOnline = true;
-      });
-
-      await Get.find<RideController>().changeDriverRideStatus(x: 0, y: 0);
-
-      setState(() {
-        goingOnline = false;
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
   }
 
-  Widget _floatingCollapsed(RideState state, RideRequestState rideRequest) {
+  Widget _floatingCollapsed() {
     return Container(
       decoration: BoxDecoration(
         color: primaryColorDark,
@@ -112,22 +101,39 @@ class _MapScreenState extends State<MapScreen> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    rideRequest == RideRequestState.PENDING
-                        ? "New ride request"
-                        : state == RideState.ACCEPTED
-                            ? "Accepted"
-                            : state == RideState.ARRIVED
-                                ? "Arrived"
-                                : state == RideState.PICKED
-                                    ? "On Trip"
-                                    : "",
-                    style: TextStyle(
-                      color: primaryColorWhite,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Obx(() => Text(
+                        Get.find<RideController>()
+                                    .ride
+                                    .value
+                                    .rideRequest
+                                    .status ==
+                                RideRequestState.PENDING
+                            ? "New ride request"
+                            : Get.find<RideController>()
+                                        .ride
+                                        .value
+                                        .rideStatus ==
+                                    RideState.ACCEPTED
+                                ? "Accepted"
+                                : Get.find<RideController>()
+                                            .ride
+                                            .value
+                                            .rideStatus ==
+                                        RideState.ARRIVED
+                                    ? "Arrived"
+                                    : Get.find<RideController>()
+                                                .ride
+                                                .value
+                                                .rideStatus ==
+                                            RideState.PICKED
+                                        ? "On Trip"
+                                        : "",
+                        style: TextStyle(
+                          color: primaryColorWhite,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )),
                 ),
               ),
             ],
@@ -137,18 +143,27 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  Future<void> goOnlineButton() async {
+    if (!goingOnline) {
+      setState(() {
+        goingOnline = true;
+      });
+
+      await Get.find<RideController>().changeDriverRideStatus(x: 0, y: 0);
+
+      setState(() {
+        goingOnline = false;
+      });
+    }
+  }
+
   void pendingOnPressedToAccept() async {
     if (!loadingGreen) {
       setState(() {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestAccepting();
-      if (result) {
-        setState(() {
-          rideRequest = RideRequestState.ACCEPTED;
-          rideState = RideState.ACCEPTED;
-        });
-      }
+
       setState(() {
         loadingGreen = false;
       });
@@ -160,11 +175,9 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingRed = true;
       });
-      //reset ride object
-      setState(() {
-        rideRequest = RideRequestState.NOTRIP;
-        rideState = RideState.NOTRIP;
-      });
+
+      Get.find<RideController>().cancelRide();
+
       setState(() {
         loadingRed = false;
       });
@@ -177,11 +190,7 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideArriving();
-      if (result) {
-        setState(() {
-          rideState = RideState.ARRIVED;
-        });
-      }
+
       setState(() {
         loadingGreen = false;
       });
@@ -193,11 +202,9 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingRed = true;
       });
-      //reset ride object
-      setState(() {
-        rideRequest = RideRequestState.NOTRIP;
-        rideState = RideState.NOTRIP;
-      });
+      //TODO
+      Get.find<RideController>().cancelRide();
+
       setState(() {
         loadingRed = false;
       });
@@ -210,11 +217,7 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().ridePicked();
-      if (result) {
-        setState(() {
-          rideState = RideState.PICKED;
-        });
-      }
+
       setState(() {
         loadingGreen = false;
       });
@@ -226,11 +229,9 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingRed = true;
       });
-      //reset ride object
-      setState(() {
-        rideRequest = RideRequestState.NOTRIP;
-        rideState = RideState.NOTRIP;
-      });
+      //TODO
+      Get.find<RideController>().cancelRide();
+
       setState(() {
         loadingRed = false;
       });
@@ -243,11 +244,7 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideDropped();
-      if (result) {
-        setState(() {
-          rideState = RideState.DROPPED;
-        });
-      }
+
       setState(() {
         loadingGreen = false;
       });
@@ -259,11 +256,9 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingRed = true;
       });
-      //reset ride object
-      setState(() {
-        rideRequest = RideRequestState.NOTRIP;
-        rideState = RideState.NOTRIP;
-      });
+      //TODO
+      Get.find<RideController>().cancelRide();
+
       setState(() {
         loadingRed = false;
       });
@@ -276,11 +271,7 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().doPayment();
-      if (result) {
-        setState(() {
-          rideState = RideState.RATEANDCOMMENT;
-        });
-      }
+
       setState(() {
         loadingGreen = false;
       });
@@ -293,22 +284,15 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideFinished(
-        driverFeedback: "new feedback",
-        passengerRating: 3,
+        driverFeedback: comment.text,
+        passengerRating: rating,
         waitingTime: 5,
       );
-      if (result) {
-        setState(() {
-          rideState = RideState.FINISHED;
-          rideState = RideState.CONFIRMED;
-          rideState = RideState.NOTRIP;
-          rideRequest = RideRequestState.NOTRIP;
-          rating = 0;
-          comment.text = "";
-        });
-      }
+
       setState(() {
         loadingGreen = false;
+        comment.text = "";
+        rating = 1;
       });
     }
   }
@@ -323,16 +307,7 @@ class _MapScreenState extends State<MapScreen> {
         passengerRating: 0,
         waitingTime: 5,
       );
-      if (result) {
-        setState(() {
-          rideState = RideState.FINISHED;
-          rideState = RideState.CONFIRMED;
-          rideState = RideState.NOTRIP;
-          rideRequest = RideRequestState.NOTRIP;
-          rating = 0;
-          comment.text = "";
-        });
-      }
+
       setState(() {
         loadingRed = false;
       });
@@ -374,58 +349,105 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            rideRequest == RideRequestState.PENDING ||
-                    rideState == RideState.ACCEPTED ||
-                    rideState == RideState.ARRIVED ||
-                    rideState == RideState.PICKED
+            Obx(() => Get.find<RideController>()
+                            .ride
+                            .value
+                            .rideRequest
+                            .status ==
+                        RideRequestState.PENDING ||
+                    Get.find<RideController>().ride.value.rideStatus ==
+                        RideState.ACCEPTED ||
+                    Get.find<RideController>().ride.value.rideStatus ==
+                        RideState.ARRIVED ||
+                    Get.find<RideController>().ride.value.rideStatus ==
+                        RideState.PICKED
                 ? SlidingUpPanel(
                     renderPanelSheet: false,
-                    panel: rideRequest == RideRequestState.PENDING
+                    panel: Get.find<RideController>()
+                                .ride
+                                .value
+                                .rideRequest
+                                .status ==
+                            RideRequestState.PENDING
                         ? RideRequestFloatingPanel(
                             greenTopic: "Accept",
                             loadingGreen: loadingGreen,
                             redTopic: "Reject",
                             loadingRed: loadingRed,
-                            passenger: passenger,
+                            passenger: Get.find<RideController>()
+                                .ride
+                                .value
+                                .rideRequest
+                                .passenger,
                             trip: trip,
                             onPressedAccept: pendingOnPressedToAccept,
                             onPressedReject: pendingOnPressedToReject,
                           )
-                        : rideState == RideState.ACCEPTED
+                        : Get.find<RideController>().ride.value.rideStatus ==
+                                RideState.ACCEPTED
                             ? RideFloatingPanel(
                                 heading: "Accepted",
-                                rideState: rideState,
+                                rideState: Get.find<RideController>()
+                                    .ride
+                                    .value
+                                    .rideStatus,
                                 greenTopic: "Arrived",
                                 loadingGreen: loadingGreen,
                                 redTopic: "Cancel",
                                 loadingRed: loadingRed,
-                                passenger: passenger,
+                                passenger: Get.find<RideController>()
+                                    .ride
+                                    .value
+                                    .rideRequest
+                                    .passenger,
                                 trip: trip,
                                 onPressedAccept: acceptedOnPressedToArrive,
                                 onPressedReject: acceptedOnPressedToCancel,
                               )
-                            : rideState == RideState.ARRIVED
+                            : Get.find<RideController>()
+                                        .ride
+                                        .value
+                                        .rideStatus ==
+                                    RideState.ARRIVED
                                 ? RideFloatingPanel(
                                     heading: "Arrived",
-                                    rideState: rideState,
+                                    rideState: Get.find<RideController>()
+                                        .ride
+                                        .value
+                                        .rideStatus,
                                     greenTopic: "Picked",
                                     loadingGreen: loadingGreen,
                                     redTopic: "Cancel",
                                     loadingRed: loadingRed,
-                                    passenger: passenger,
+                                    passenger: Get.find<RideController>()
+                                        .ride
+                                        .value
+                                        .rideRequest
+                                        .passenger,
                                     trip: trip,
                                     onPressedAccept: arrivedOnPressedToPicked,
                                     onPressedReject: arrivedOnPressedToCancel,
                                   )
-                                : rideState == RideState.PICKED
+                                : Get.find<RideController>()
+                                            .ride
+                                            .value
+                                            .rideStatus ==
+                                        RideState.PICKED
                                     ? RideFloatingPanel(
                                         heading: "Picked",
-                                        rideState: rideState,
+                                        rideState: Get.find<RideController>()
+                                            .ride
+                                            .value
+                                            .rideStatus,
                                         greenTopic: "Dropped",
                                         loadingGreen: loadingGreen,
                                         redTopic: "Cancel",
                                         loadingRed: loadingRed,
-                                        passenger: passenger,
+                                        passenger: Get.find<RideController>()
+                                            .ride
+                                            .value
+                                            .rideRequest
+                                            .passenger,
                                         trip: trip,
                                         onPressedAccept:
                                             pickedOnPressedToDropped,
@@ -433,22 +455,30 @@ class _MapScreenState extends State<MapScreen> {
                                             pickedOnPressedToCancel,
                                       )
                                     : Container(),
-                    collapsed: _floatingCollapsed(rideState, rideRequest),
+                    collapsed: _floatingCollapsed(),
                     backdropColor: Colors.transparent,
                     defaultPanelState: PanelState.OPEN,
-                    maxHeight: rideState == RideState.ACCEPTED ||
-                            rideState == RideState.ARRIVED ||
-                            rideState == RideState.PICKED
+                    maxHeight: Get.find<RideController>()
+                                    .ride
+                                    .value
+                                    .rideStatus ==
+                                RideState.ACCEPTED ||
+                            Get.find<RideController>().ride.value.rideStatus ==
+                                RideState.ARRIVED ||
+                            Get.find<RideController>().ride.value.rideStatus ==
+                                RideState.PICKED
                         ? 320
                         : 360,
                   )
-                : Container(),
-            rideState == RideState.DROPPED
+                : Container()),
+            Obx(() => Get.find<RideController>().ride.value.rideStatus ==
+                    RideState.DROPPED
                 ? TripCompleted(
                     loading: loadingGreen,
                     onPressed: tripCompletedOnPressed,
                   )
-                : rideState == RideState.RATEANDCOMMENT
+                : Get.find<RideController>().ride.value.rideStatus ==
+                        RideState.RATEANDCOMMENT
                     ? RateAndComment(
                         greenTopic: "Submit",
                         loadingGreen: loadingGreen,
@@ -484,7 +514,7 @@ class _MapScreenState extends State<MapScreen> {
                         },
                         comment: comment,
                       )
-                    : Container(),
+                    : Container()),
             Align(
               alignment: Alignment.topCenter,
               child: Column(
@@ -513,10 +543,13 @@ class _MapScreenState extends State<MapScreen> {
                     child: SecondaryButtonWithIcon(
                       icon: Icons.online_prediction,
                       iconColor: primaryColorWhite,
-                      onPressed: () {
-                        setState(() {
-                          rideRequest = RideRequestState.PENDING;
-                        });
+                      onPressed: () async {
+                        // setState(() {
+                        //   rideRequest = RideRequestState.PENDING;
+                        // });
+                        // setState(() {
+                        //   goingOnline = false;
+                        // });
                       },
                       text: "get ride",
                       boxColor: primaryColorDark,

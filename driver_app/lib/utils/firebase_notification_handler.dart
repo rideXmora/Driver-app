@@ -54,28 +54,62 @@ class FirebaseNotifications {
       if (message.notification != null) {
         debugPrint(message.notification!.title);
         debugPrint(message.notification!.body);
-        String id = "";
-        if (message.notification!.body != null) {
-          id = message.notification!.body!;
-          Get.find<RideController>().getRideRequest(id);
+        debugPrint(message.data.toString());
+        debugPrint("id: " + message.data['id']);
+        //{passengerName: Ksr Raj, passengerPhone: +94772597206, startLocationX: 12.123454, startLocationY: 12.123454, id: 61828f08bac86e6a352bd80e, passengerRating: 4.0}
+
+        if (message.data['id'] != null) {
+          debugPrint("id");
+          String passengerName = message.data['passengerName'];
+          String passengerPhone = message.data['passengerPhone'];
+          String startLocationX = message.data['startLocationX'];
+          String startLocationY = message.data['startLocationY'];
+          String id = message.data['id'];
+          String passengerRating = message.data['passengerRating'];
+
+          Get.find<RideController>().getRideRequest(
+            id,
+            passengerName,
+            passengerPhone,
+            startLocationX,
+            startLocationY,
+            passengerRating,
+          );
         } else {
-          debugPrint("error");
+          debugPrint("error  - no id");
         }
       }
     });
 
     // listen to os notification clicks
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       debugPrint("new background message");
       if (message.notification != null) {
         debugPrint(message.notification!.title);
         debugPrint(message.notification!.body);
-        String id = "";
-        if (message.notification!.body != null) {
-          id = message.notification!.body!;
-          Get.find<RideController>().getRideRequest(id);
+        debugPrint(message.data.toString());
+        debugPrint("id: " + message.data['id']);
+        //{passengerName: Ksr Raj, passengerPhone: +94772597206, startLocationX: 12.123454, startLocationY: 12.123454, id: 61828f08bac86e6a352bd80e, passengerRating: 4.0}
+
+        if (message.data['id'] != null) {
+          debugPrint("id");
+          String passengerName = message.data['passengerName'];
+          String passengerPhone = message.data['passengerPhone'];
+          String startLocationX = message.data['startLocationX'];
+          String startLocationY = message.data['startLocationY'];
+          String id = message.data['id'];
+          String passengerRating = message.data['passengerRating'];
+
+          Get.find<RideController>().getRideRequest(
+            id,
+            passengerName,
+            passengerPhone,
+            startLocationX,
+            startLocationY,
+            passengerRating,
+          );
         } else {
-          debugPrint("error");
+          debugPrint("error  - no id");
         }
       }
     });

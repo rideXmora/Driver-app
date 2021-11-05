@@ -76,6 +76,8 @@ class UserController extends GetxController {
   ) {
     DriverState driverState = getDriverState(
         data["status"] == null ? DriverState.OFFLINE : data["status"]);
+
+    debugPrint("not token : " + driver.value.notificationToken);
     driver.update((val) {
       val!.id = data["id"];
       val.phone = data["phone"];
@@ -104,9 +106,12 @@ class UserController extends GetxController {
           : Organization.fromJson(data["driverOrganization"]);
 
       val.status = driverState;
+
       val.notificationToken =
           data["notificationToken"] == null ? "" : data["notificationToken"];
     });
+    debugPrint("not token from responce : " + data["notificationToken"]);
+    debugPrint("not token aftewr : " + driver.value.notificationToken);
   }
 
   void updateDriverVehicleData(
