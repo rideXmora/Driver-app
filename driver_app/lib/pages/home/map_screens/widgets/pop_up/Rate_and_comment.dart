@@ -7,8 +7,8 @@ import 'package:driver_app/widgets/secondary_button.dart';
 class RateAndComment extends StatelessWidget {
   RateAndComment({
     Key? key,
-    required this.loading,
     this.onPressed,
+    this.onCancel,
     required this.rating,
     this.onRatingChanged1,
     this.onRatingChanged2,
@@ -16,6 +16,10 @@ class RateAndComment extends StatelessWidget {
     this.onRatingChanged4,
     this.onRatingChanged5,
     required this.comment,
+    required this.loadingGreen,
+    required this.loadingRed,
+    required this.greenTopic,
+    required this.redTopic,
   }) : super(key: key);
   final onRatingChanged1;
   final onRatingChanged2;
@@ -23,9 +27,13 @@ class RateAndComment extends StatelessWidget {
   final onRatingChanged4;
   final onRatingChanged5;
   final onPressed;
+  final onCancel;
   final int rating;
-  final bool loading;
   final TextEditingController comment;
+  final bool loadingGreen;
+  final bool loadingRed;
+  final String greenTopic;
+  final String redTopic;
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +150,8 @@ class RateAndComment extends StatelessWidget {
                           child: SecondaryButton(
                             width: MediaQuery.of(context).size.width * 0.4,
                             onPressed: onPressed,
-                            loading: loading,
-                            text: "Confirm",
+                            loading: loadingGreen,
+                            text: greenTopic,
                             boxColor: primaryColorLight,
                             shadowColor: Colors.transparent,
                           ),
@@ -156,9 +164,9 @@ class RateAndComment extends StatelessWidget {
                           flex: 10,
                           child: SecondaryButton(
                             width: MediaQuery.of(context).size.width * 0.4,
-                            onPressed: onPressed,
-                            loading: loading,
-                            text: "Skip",
+                            onPressed: onCancel,
+                            loading: loadingRed,
+                            text: redTopic,
                             boxColor: Color(0xFFD7A7A7),
                             shadowColor: Colors.transparent,
                           ),

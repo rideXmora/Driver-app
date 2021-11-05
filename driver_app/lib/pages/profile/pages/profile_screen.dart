@@ -1,9 +1,11 @@
+import 'package:driver_app/controllers/auth_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/custom_text_field.dart';
 import 'package:driver_app/widgets/secondary_button.dart';
+import 'package:get/get.dart';
 
 import 'card_page.dart';
 
@@ -29,6 +31,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     languageController.text = languageList[0];
+  }
+
+  void mainSubmitOnPressed() async {
+    if (!edit) {
+      if (!loading) {
+        setState(() {
+          loading = true;
+        });
+        await Get.find<AuthController>().signOut();
+        setState(() {
+          loading = false;
+        });
+      }
+    } else {
+      // if (!loading) {
+      //   setState(() {
+      //     loading = true;
+      //   });
+
+      //   if (await checkChange()) {
+      //     bool changed = await Get.find<UserController>().changeProfile(
+      //       name: nameController.text.trim(),
+      //       email: emailController.text.trim(),
+      //       language: languageController.text.trim(),
+      //     );
+      //     if (changed) {
+      //       edit = false;
+      //     }
+      //   } else {
+      //     Get.snackbar(
+      //         "No change", "First edit your info. Nothing has changed so far");
+      //   }
+      //   setState(() {
+      //     loading = false;
+      //   });
+      // }
+    }
   }
 
   @override
@@ -337,21 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SecondaryButton(
                       loading: loading,
-                      onPressed: () {
-                        if (!loading) {
-                          setState(() {
-                            loading = true;
-                          });
-                          if (edit) {
-                            Future.delayed(Duration(seconds: 2)).then((value) {
-                              setState(() {
-                                loading = false;
-                                edit = false;
-                              });
-                            });
-                          }
-                        }
-                      },
+                      onPressed: mainSubmitOnPressed,
                       text: edit ? "Update" : "Sign out",
                       boxColor: primaryColorDark,
                       shadowColor: primaryColorDark.withOpacity(0),
