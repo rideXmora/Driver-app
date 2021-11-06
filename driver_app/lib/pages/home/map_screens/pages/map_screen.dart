@@ -10,6 +10,7 @@ import 'package:driver_app/utils/driver_status.dart';
 import 'package:driver_app/utils/firebase_notification_handler.dart';
 import 'package:driver_app/utils/payment_method.dart';
 import 'package:driver_app/utils/ride_request_state_enum.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/widgets/secondary_button_with_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -67,6 +68,31 @@ class _MapScreenState extends State<MapScreen> {
   TextEditingController comment = TextEditingController();
 
   bool goingOnline = false;
+
+  final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+
+  late GoogleMapController newGoogleMapController;
+
+  late Position currentPosition;
+
+  Future<void> locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+
+    LatLng latLastPosition = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLastPosition, zoom: 14);
+
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   @override
   void initState() {
@@ -342,8 +368,16 @@ class _MapScreenState extends State<MapScreen> {
                   child: GoogleMap(
                     mapType: MapType.normal,
                     initialCameraPosition: _kGooglePlex,
-                    onMapCreated: (GoogleMapController controller) {
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    zoomGesturesEnabled: true,
+                    zoomControlsEnabled: true,
+                    onMapCreated: (GoogleMapController controller) async {
                       _controller.complete(controller);
+                      _controllerGoogleMap.complete(controller);
+                      newGoogleMapController = controller;
+
+                      await locatePosition();
                     },
                   ),
                 ),

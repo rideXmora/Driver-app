@@ -48,6 +48,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   stomp: ^0.8.0
   firebase_messaging: ^10.0.9
+  geolocator:
 
 dev_dependencies:
   flutter_test:
