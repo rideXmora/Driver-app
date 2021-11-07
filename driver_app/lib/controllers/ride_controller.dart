@@ -1,4 +1,5 @@
 import 'package:driver_app/api/driver_ride_api.dart';
+import 'package:driver_app/controllers/map_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/location.dart';
 import 'package:driver_app/modals/organization.dart';
@@ -7,15 +8,28 @@ import 'package:driver_app/modals/ride_request_driver.dart';
 import 'package:driver_app/modals/ride_request_passenger.dart';
 import 'package:driver_app/modals/ride_request_res.dart';
 import 'package:driver_app/modals/ride_request_vehicle.dart';
+import 'package:driver_app/modals/trip.dart';
 import 'package:driver_app/modals/vehicle.dart';
 import 'package:driver_app/utils/driver_status.dart';
+import 'package:driver_app/utils/payment_method.dart';
 import 'package:driver_app/utils/ride_request_state_enum.dart';
 import 'package:driver_app/utils/ride_state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class RideController extends GetxController {
   UserController userController = Get.find<UserController>();
+  Rx<Trip> trip = Trip(
+    pickUp: "",
+    destination: "",
+    distance: "",
+    time: "",
+    amount: 0,
+    paymentMethod: PaymentMethod.CASH,
+  ).obs;
+
+  RxBool newRide = false.obs;
   var ride = Ride(
     rideStatus: RideState.NOTRIP,
     rideRequest: RideRequestRes(
@@ -98,6 +112,9 @@ class RideController extends GetxController {
         timestamp: DateTime.now(),
       ),
     );
+    Get.find<MapController>().clearData();
+    Get.find<MapController>().locatePosition();
+    newRide.value = false;
   }
 
   Future<void> getRideRequest(
@@ -107,10 +124,48 @@ class RideController extends GetxController {
     String startLocationX,
     String startLocationY,
     String passengerRating,
+    String endLocationX,
+    String endLocationY,
   ) async {
     try {
       //hardcoded ride requsest id
       debugPrint("ride request id: " + id);
+
+      MapController mapController = Get.find<MapController>();
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      Location startLocation = Location(
+        x: position.latitude,
+        y: position.longitude,
+      );
+
+      Location endLocation = Location(
+        x: double.parse(startLocationX),
+        y: double.parse(startLocationY),
+      );
+      mapController.start.value =
+          await mapController.searchCoordinateAddress(startLocation);
+      mapController.to.value =
+          await mapController.searchCoordinateAddress(endLocation);
+      debugPrint("end");
+      debugPrint(startLocation.toJson().toString());
+      debugPrint(endLocation.toJson().toString());
+      await mapController.getDirectionDetails(startLocation, endLocation);
+      debugPrint("directionDetails: " +
+          mapController.directionDetails.value.toJson().toString());
+      debugPrint("newRide" + newRide.value.toString());
+      newRide.value = true;
+      debugPrint("directionDetails 2 : " +
+          mapController.directionDetails.value.toJson().toString());
+      mapController.setPolyLines();
+      trip.update((val) {
+        val!.pickUp = mapController.start.value.getLocationText();
+        val.destination = mapController.to.value.getLocationText();
+        val.distance = mapController.directionDetails.value.distanceText;
+        val.time = mapController.directionDetails.value.durationText;
+        val.amount = 0;
+        val.paymentMethod = PaymentMethod.CASH;
+      });
       ride.update((val) {
         val!.id = "";
         val.rideStatus = RideState.NOTRIP;
@@ -144,9 +199,12 @@ class RideController extends GetxController {
           distance: 100,
         );
       });
+
       debugPrint("ride : " + ride.value.toJson().toString());
     } catch (e) {
+      debugPrint(e.toString());
       Get.snackbar("Something is wrong!!!", "Please try again.");
+      newRide.value = false;
     }
   }
 
@@ -319,17 +377,21 @@ class RideController extends GetxController {
         if (getRideState(response["body"]["rideStatus"]) ==
             RideState.FINISHED) {
           Get.find<RideController>().cancelRide();
+          newRide.value = false;
           return true;
         } else {
           Get.snackbar("Something is wrong!!!", "Please try again.");
+          newRide.value = false;
           return false;
         }
       } else {
         Get.snackbar("Something is wrong!!!", "Please try again.");
+        newRide.value = false;
         return false;
       }
     } catch (e) {
       Get.snackbar("Something is wrong!!!", "Please try again.");
+      newRide.value = false;
       return false;
     }
   }

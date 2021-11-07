@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:driver_app/api/notification_api.dart';
+import 'package:driver_app/controllers/map_controller.dart';
 import 'package:driver_app/controllers/notification_controller.dart';
 import 'package:driver_app/controllers/ride_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
@@ -10,6 +11,7 @@ import 'package:driver_app/utils/driver_status.dart';
 import 'package:driver_app/utils/firebase_notification_handler.dart';
 import 'package:driver_app/utils/payment_method.dart';
 import 'package:driver_app/utils/ride_request_state_enum.dart';
+import 'package:driver_app/widgets/circular_loading.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/widgets/secondary_button_with_icon.dart';
@@ -45,21 +47,14 @@ class _MapScreenState extends State<MapScreen> {
   bool loadingGreen = false;
   bool loadingRed = false;
 
-  Passenger passenger = Passenger(
-    image: "assets/images/images/user_icon.png",
-    name: "Avishka Rathnavibushana",
-    number: "+94711737706",
-    rating: 3.4,
-  );
-
-  Trip trip = Trip(
-    pickUp: "Moratuwa, Sri Lanka",
-    destination: "Panadura, Sri Lanka",
-    distance: 0.1,
-    time: 20,
-    amount: 250,
-    paymentMethod: PaymentMethod.CASH,
-  );
+  // Trip trip = Trip(
+  //   pickUp: "Moratuwa, Sri Lanka",
+  //   destination: "Panadura, Sri Lanka",
+  //   distance: "0.1",
+  //   time: "20",
+  //   amount: 250,
+  //   paymentMethod: PaymentMethod.CASH,
+  // );
 
   //RideState rideState = RideState.NOTRIP;
   //RideRequestState rideRequest = RideRequestState.NOTRIP;
@@ -69,30 +64,11 @@ class _MapScreenState extends State<MapScreen> {
 
   bool goingOnline = false;
 
+  MapController mapController = Get.find<MapController>();
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-
-  Completer<GoogleMapController> _controllerGoogleMap = Completer();
-
-  late GoogleMapController newGoogleMapController;
-
-  late Position currentPosition;
-
-  Future<void> locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
-
-    LatLng latLastPosition = LatLng(position.latitude, position.longitude);
-
-    CameraPosition cameraPosition =
-        CameraPosition(target: latLastPosition, zoom: 14);
-
-    newGoogleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-  }
 
   @override
   void initState() {
@@ -365,21 +341,24 @@ class _MapScreenState extends State<MapScreen> {
             Column(
               children: [
                 Expanded(
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    zoomGesturesEnabled: true,
-                    zoomControlsEnabled: true,
-                    onMapCreated: (GoogleMapController controller) async {
-                      _controller.complete(controller);
-                      _controllerGoogleMap.complete(controller);
-                      newGoogleMapController = controller;
-
-                      await locatePosition();
-                    },
-                  ),
+                  child: Obx(() => GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: _kGooglePlex,
+                        myLocationButtonEnabled: true,
+                        myLocationEnabled: true,
+                        zoomGesturesEnabled: true,
+                        zoomControlsEnabled: true,
+                        onMapCreated: (GoogleMapController controller) {
+                          Completer<GoogleMapController> _controllerGoogleMap =
+                              Completer();
+                          _controllerGoogleMap.complete(controller);
+                          mapController.newGoogleMapController = controller;
+                          mapController.locatePosition();
+                        },
+                        polylines: mapController.polyLineSet.value,
+                        markers: mapController.markersSet.value,
+                        circles: mapController.circlesSet.value,
+                      )),
                 ),
               ],
             ),
@@ -413,7 +392,7 @@ class _MapScreenState extends State<MapScreen> {
                                 .value
                                 .rideRequest
                                 .passenger,
-                            trip: trip,
+                            trip: Get.find<RideController>().trip.value,
                             onPressedAccept: pendingOnPressedToAccept,
                             onPressedReject: pendingOnPressedToReject,
                           )
@@ -434,7 +413,7 @@ class _MapScreenState extends State<MapScreen> {
                                     .value
                                     .rideRequest
                                     .passenger,
-                                trip: trip,
+                                trip: Get.find<RideController>().trip.value,
                                 onPressedAccept: acceptedOnPressedToArrive,
                                 onPressedReject: acceptedOnPressedToCancel,
                               )
@@ -458,7 +437,7 @@ class _MapScreenState extends State<MapScreen> {
                                         .value
                                         .rideRequest
                                         .passenger,
-                                    trip: trip,
+                                    trip: Get.find<RideController>().trip.value,
                                     onPressedAccept: arrivedOnPressedToPicked,
                                     onPressedReject: arrivedOnPressedToCancel,
                                   )
@@ -482,7 +461,9 @@ class _MapScreenState extends State<MapScreen> {
                                             .value
                                             .rideRequest
                                             .passenger,
-                                        trip: trip,
+                                        trip: Get.find<RideController>()
+                                            .trip
+                                            .value,
                                         onPressedAccept:
                                             pickedOnPressedToDropped,
                                         onPressedReject:
@@ -510,6 +491,7 @@ class _MapScreenState extends State<MapScreen> {
                 ? TripCompleted(
                     loading: loadingGreen,
                     onPressed: tripCompletedOnPressed,
+                    trip: Get.find<RideController>().trip.value,
                   )
                 : Get.find<RideController>().ride.value.rideStatus ==
                         RideState.RATEANDCOMMENT
@@ -584,6 +566,17 @@ class _MapScreenState extends State<MapScreen> {
                         // setState(() {
                         //   goingOnline = false;
                         // });
+                        debugPrint(mapController.directionDetails.value
+                            .toJson()
+                            .toString());
+                        //mapController.setPolyLines();
+                        mapController.locatePosition();
+                        //mapController.setPolyLines();
+                        // if (Get.find<RideController>().newRide.value) {
+                        //   Get.find<RideController>().newRide.value = false;
+                        // } else {
+                        //   Get.find<RideController>().newRide.value = true;
+                        // }
                       },
                       text: "get ride",
                       boxColor: primaryColorDark,
@@ -593,6 +586,14 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ],
               ),
+            ),
+            Obx(
+              () => mapController.polyLineLoading.value
+                  ? Container(
+                      color: primaryColorBlack.withOpacity(0.5),
+                      child: Center(child: CircularLoading()),
+                    )
+                  : Container(),
             ),
           ],
         ),

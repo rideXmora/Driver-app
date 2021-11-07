@@ -64,6 +64,8 @@ class FirebaseNotifications {
           String passengerPhone = message.data['passengerPhone'];
           String startLocationX = message.data['startLocationX'];
           String startLocationY = message.data['startLocationY'];
+          String endLocationX = message.data['endLocationX'];
+          String endLocationY = message.data['endLocationY'];
           String id = message.data['id'];
           String passengerRating = message.data['passengerRating'];
 
@@ -74,6 +76,8 @@ class FirebaseNotifications {
             startLocationX,
             startLocationY,
             passengerRating,
+            endLocationX,
+            endLocationY,
           );
         } else {
           debugPrint("error  - no id");
@@ -97,6 +101,8 @@ class FirebaseNotifications {
           String passengerPhone = message.data['passengerPhone'];
           String startLocationX = message.data['startLocationX'];
           String startLocationY = message.data['startLocationY'];
+          String endLocationX = message.data['endLocationX'];
+          String endLocationY = message.data['endLocationY'];
           String id = message.data['id'];
           String passengerRating = message.data['passengerRating'];
 
@@ -107,6 +113,8 @@ class FirebaseNotifications {
             startLocationX,
             startLocationY,
             passengerRating,
+            endLocationX,
+            endLocationY,
           );
         } else {
           debugPrint("error  - no id");

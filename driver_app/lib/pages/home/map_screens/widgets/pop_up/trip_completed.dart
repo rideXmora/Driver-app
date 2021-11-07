@@ -1,3 +1,4 @@
+import 'package:driver_app/modals/trip.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/theme/colors.dart';
@@ -9,11 +10,13 @@ class TripCompleted extends StatelessWidget {
     Key? key,
     required this.loading,
     this.onPressed,
+    required this.trip,
   }) : super(key: key);
 
   final onPressed;
 
   final bool loading;
+  final Trip trip;
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +134,7 @@ class TripCompleted extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          "Moratuwa, Sri Lanka",
+                                          trip.pickUp,
                                           style: TextStyle(
                                             color: primaryColorWhite,
                                             fontSize: 14,
@@ -159,7 +162,7 @@ class TripCompleted extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          "Panadura, Sri Lanka",
+                                          trip.destination,
                                           style: TextStyle(
                                             color: primaryColorWhite,
                                             fontSize: 14,
@@ -190,13 +193,13 @@ class TripCompleted extends StatelessWidget {
                             SimpleIconTextBox(
                               icon: Icons.location_on_sharp,
                               iconColor: primaryColorLight,
-                              text: "0.1 miles",
+                              text: trip.distance,
                               textColor: primaryColorWhite,
                             ),
                             SimpleIconTextBox(
                               icon: Icons.timer,
                               iconColor: primaryColorLight,
-                              text: "1 min",
+                              text: trip.time,
                               textColor: primaryColorWhite,
                             ),
                             SimpleIconTextBox(
@@ -212,12 +215,12 @@ class TripCompleted extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.credit_card, color: primaryColorLight),
+                        Icon(Icons.money, color: primaryColorLight),
                         SizedBox(
                           width: 5,
                         ),
                         Text(
-                          "Card Payment",
+                          "Cash Payment",
                           style: TextStyle(
                             color: primaryColorWhite,
                             fontSize: 14,

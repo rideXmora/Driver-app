@@ -127,13 +127,13 @@ class RideRequestFloatingPanel extends StatelessWidget {
                   SimpleIconTextBox(
                     icon: Icons.location_on_sharp,
                     iconColor: primaryColorLight,
-                    text: "${trip.distance} miles",
+                    text: trip.distance,
                     textColor: primaryColorWhite,
                   ),
                   SimpleIconTextBox(
                     icon: Icons.timer,
                     iconColor: primaryColorLight,
-                    text: "${trip.time} min",
+                    text: trip.time,
                     textColor: primaryColorWhite,
                   ),
                   SimpleIconTextBox(

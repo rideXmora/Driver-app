@@ -234,7 +234,7 @@ class RideFloatingPanel extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Moratuwa, Sri Lanka",
+                                  trip.pickUp,
                                   style: TextStyle(
                                     color: primaryColorWhite,
                                     fontSize: 14,
@@ -261,7 +261,7 @@ class RideFloatingPanel extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Panadura, Sri Lanka",
+                                  trip.destination,
                                   style: TextStyle(
                                     color: primaryColorWhite,
                                     fontSize: 14,

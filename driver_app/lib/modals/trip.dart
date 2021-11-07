@@ -17,8 +17,8 @@ class Trip {
 
   String pickUp;
   String destination;
-  double distance;
-  int time;
+  String distance;
+  String time;
   double amount;
   PaymentMethod paymentMethod;
 
