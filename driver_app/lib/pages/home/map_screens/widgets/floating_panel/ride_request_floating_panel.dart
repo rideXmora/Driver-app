@@ -136,12 +136,12 @@ class RideRequestFloatingPanel extends StatelessWidget {
                     text: trip.time,
                     textColor: primaryColorWhite,
                   ),
-                  SimpleIconTextBox(
-                    icon: Icons.attach_money_sharp,
-                    iconColor: primaryColorLight,
-                    text: "${trip.amount} LKR",
-                    textColor: primaryColorWhite,
-                  ),
+                  // SimpleIconTextBox(
+                  //   icon: Icons.attach_money_sharp,
+                  //   iconColor: primaryColorLight,
+                  //   text: "${trip.amount} LKR",
+                  //   textColor: primaryColorWhite,
+                  // ),
                 ],
               ),
             ),

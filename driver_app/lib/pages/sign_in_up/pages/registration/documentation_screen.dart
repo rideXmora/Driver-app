@@ -41,11 +41,11 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
       "icon": "assets/svgs/Detail card.svg",
       "topic": "Vehicle insurance (Third party/Private/Hiring)",
     },
-    {
-      "page": RevenueLicenseUploadScreen(),
-      "icon": "assets/svgs/Detail card.svg",
-      "topic": "Revenue License",
-    },
+    // {
+    //   "page": RevenueLicenseUploadScreen(),
+    //   "icon": "assets/svgs/Detail card.svg",
+    //   "topic": "Revenue License",
+    // },
     {
       "page": VechicleRegistratonDocUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",

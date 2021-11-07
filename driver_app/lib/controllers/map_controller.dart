@@ -388,7 +388,7 @@ class MapController extends GetxController {
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
 
     Marker pickUpLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       infoWindow: InfoWindow(
           title: start.value.getLocationText(), snippet: "My Location"),
       position: pickupLatLng,
@@ -396,7 +396,7 @@ class MapController extends GetxController {
     );
 
     Marker dropOffLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       infoWindow: InfoWindow(
           title: to.value.getLocationText(), snippet: "DropOff Location"),
       position: dropOffLatLng,

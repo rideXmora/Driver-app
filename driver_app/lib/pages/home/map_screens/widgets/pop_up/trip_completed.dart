@@ -11,12 +11,14 @@ class TripCompleted extends StatelessWidget {
     required this.loading,
     this.onPressed,
     required this.trip,
+    required this.payment,
   }) : super(key: key);
 
   final onPressed;
 
   final bool loading;
   final Trip trip;
+  final double payment;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +207,7 @@ class TripCompleted extends StatelessWidget {
                             SimpleIconTextBox(
                               icon: Icons.attach_money_sharp,
                               iconColor: primaryColorLight,
-                              text: "250 LKR",
+                              text: "$payment LKR",
                               textColor: primaryColorWhite,
                             ),
                           ],

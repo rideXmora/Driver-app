@@ -134,14 +134,17 @@ class RideController extends GetxController {
       MapController mapController = Get.find<MapController>();
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
+
+      Location driverLocation =
+          Location(x: position.latitude, y: position.longitude);
       Location startLocation = Location(
-        x: position.latitude,
-        y: position.longitude,
+        x: double.parse(startLocationX),
+        y: double.parse(startLocationY),
       );
 
       Location endLocation = Location(
-        x: double.parse(startLocationX),
-        y: double.parse(startLocationY),
+        x: double.parse(endLocationX),
+        y: double.parse(endLocationY),
       );
       mapController.start.value =
           await mapController.searchCoordinateAddress(startLocation);

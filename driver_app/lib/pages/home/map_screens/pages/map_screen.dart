@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:driver_app/api/notification_api.dart';
 import 'package:driver_app/controllers/map_controller.dart';
@@ -26,6 +27,10 @@ import 'package:driver_app/pages/home/map_screens/widgets/pop_up/trip_completed.
 import 'package:driver_app/utils/ride_state_enum.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -73,7 +78,52 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+
+    // try {
+    //   stompClient = StompClient(
+    //       config: StompConfig.SockJS(
+    //     url: 'http://ridex.ml/ws',
+    //     onConnect: onConnect,
+    //     beforeConnect: () async {
+    //       print('waiting to connect...');
+    //       await Future.delayed(Duration(milliseconds: 200));
+    //       print('connecting...');
+    //     },
+    //     onWebSocketError: (dynamic error) => print(error.toString()),
+    //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+    //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+    //   ));
+    //   stompClient.activate();
+    // } catch (e) {
+    //   debugPrint(e.toString());
+    // }
+    // stompClient.activate();
   }
+
+  // void onConnect(StompFrame frame) {
+  //   var sname = "+94711737706";
+  //   stompClient.subscribe(
+  //     destination: "/user/" + sname + "/queue/messages",
+  //     callback: (frame) {
+  //       List<dynamic>? result = json.decode(frame.body!);
+  //       print(result);
+  //     },
+  //   );
+
+  // Timer.periodic(Duration(seconds: 10), (_) {
+  //   const message = {
+  //     "senderPhone": "sname",
+  //     "receiverPhone": "rname",
+  //     "location": {"x": 1.2222, "y": 2.444},
+  //   };
+  //   stompClient.send(
+  //     destination: '/app/chat',
+  //     body: json.encode(message),
+  //   );
+  // });
+  // }
+
+  var stompClient;
 
   Widget _floatingCollapsed() {
     return Container(
@@ -492,6 +542,7 @@ class _MapScreenState extends State<MapScreen> {
                     loading: loadingGreen,
                     onPressed: tripCompletedOnPressed,
                     trip: Get.find<RideController>().trip.value,
+                    payment: Get.find<RideController>().ride.value.payment,
                   )
                 : Get.find<RideController>().ride.value.rideStatus ==
                         RideState.RATEANDCOMMENT
@@ -554,36 +605,66 @@ class _MapScreenState extends State<MapScreen> {
                       width: width,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: SecondaryButtonWithIcon(
-                      icon: Icons.online_prediction,
-                      iconColor: primaryColorWhite,
-                      onPressed: () async {
-                        // setState(() {
-                        //   rideRequest = RideRequestState.PENDING;
-                        // });
-                        // setState(() {
-                        //   goingOnline = false;
-                        // });
-                        debugPrint(mapController.directionDetails.value
-                            .toJson()
-                            .toString());
-                        //mapController.setPolyLines();
-                        mapController.locatePosition();
-                        //mapController.setPolyLines();
-                        // if (Get.find<RideController>().newRide.value) {
-                        //   Get.find<RideController>().newRide.value = false;
-                        // } else {
-                        //   Get.find<RideController>().newRide.value = true;
-                        // }
-                      },
-                      text: "get ride",
-                      boxColor: primaryColorDark,
-                      shadowColor: primaryColorDark,
-                      width: width,
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () async {
+                  //       debugPrint("ASfsa");
+
+                  //       debugPrint(mapController.directionDetails.value
+                  //           .toJson()
+                  //           .toString());
+
+                  //       Timer.periodic(Duration(seconds: 5),
+                  //           (Timer timer) async {
+                  //         debugPrint("asd");
+                  //         timer.cancel();
+                  //         await mapController.getLiveLocation();
+                  //         const timeout = Duration(seconds: 60);
+                  //         if (timeout == Duration(seconds: 11)) {
+                  //           mapController.markersSet.value.removeWhere(
+                  //               (maker) => maker.markerId.value == "animating");
+
+                  //           mapController.markersSet.refresh();
+                  //           setState(() {});
+                  //           timer.cancel();
+                  //         }
+                  //       });
+                  //       // mapController.markersSet.value.removeWhere(
+                  //       //     (maker) => maker.markerId.value == "animating");
+
+                  //       // mapController.markersSet.refresh();
+                  //     },
+                  //     text: "get ride",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () {
+                  //       // const message = {
+                  //       //   "senderPhone": "sname",
+                  //       //   "receiverPhone": "rname",
+                  //       //   "location": {"x": 1.2222, "y": 2.444},
+                  //       // };
+                  //       // stompClient.send(
+                  //       //   destination: '/app/chat',
+                  //       //   body: json.encode(message),
+                  //       // );
+                  //     },
+                  //     text: "send message",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
