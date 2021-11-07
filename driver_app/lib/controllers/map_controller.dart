@@ -244,6 +244,21 @@ class MapController extends GetxController {
     return placeDetails;
   }
 
+  Future<String> searchAddress(Location location) async {
+    String url =
+        "/maps/api/geocode/json?latlng=${location.x},${location.y}&key=$Google_MAP_API_KEY";
+
+    var response = await externalAPIGetRequest(url: url);
+    var address = "";
+
+    if (response != "error") {
+      address = response["results"][0]["address_components"][1]["long_name"] +
+          ", " +
+          response["results"][0]["address_components"][2]["long_name"];
+    }
+    return address;
+  }
+
   Future<Map<String, dynamic>> getPlaceDetails(String placeId) async {
     String url =
         "/maps/api/place/details/json?place_id=$placeId&key=$Google_MAP_API_KEY";
