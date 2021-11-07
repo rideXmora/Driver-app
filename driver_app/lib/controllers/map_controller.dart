@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:driver_app/modals/directionDetails.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,7 +20,79 @@ class MapController extends GetxController {
   RxSet<Marker> markersSet = {Marker(markerId: MarkerId("value"))}.obs;
   RxSet<Circle> circlesSet = {Circle(circleId: CircleId("value"))}.obs;
   late GoogleMapController newGoogleMapController;
-  late Position currentPosition;
+  Rx<Position> currentPosition = Position(
+          longitude: 0,
+          latitude: 0,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0)
+      .obs;
+
+  var geolocator = Geolocator();
+  var locationOption =
+      LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
+  late BitmapDescriptor animatingMarkerIcon;
+  Rx<Position> myPosition = Position(
+          longitude: 0,
+          latitude: 0,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0)
+      .obs;
+
+  Future<void> createIconMaker() async {
+    if (animatingMarkerIcon == null) {
+      await BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(size: Size(24, 24)),
+              'assets/images/images/car_android.png')
+          .then((value) {
+        animatingMarkerIcon = value;
+      });
+    }
+  }
+
+  Future<void> getLiveLocation() async {
+    //get location from socket and update myPosition
+    // currentPosition.value = position;
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition.value = position;
+    debugPrint(currentPosition.value.toJson().toString());
+    myPosition.value = position;
+    LatLng mPosition =
+        LatLng(myPosition.value.latitude, myPosition.value.longitude);
+
+    Marker animationMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: "My Location"),
+      position: mPosition,
+      markerId: MarkerId("animating"),
+    );
+
+    CameraPosition cameraPosition = CameraPosition(target: mPosition, zoom: 17);
+
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+// Circle animationMarkerCircle = Circle(
+//       fillColor: Colors.yellow,
+//       center: pickupLatLng,
+//       radius: 12,
+//       strokeWidth: 4,
+//       strokeColor: Colors.yellowAccent,
+//       circleId: CircleId("dropOffID"),
+//     );
+    markersSet.value
+        .removeWhere((maker) => maker.markerId.value == "animating");
+    markersSet.refresh();
+    markersSet.value.add(animationMarker);
+    markersSet.refresh();
+  }
 
   Rx<DirectionDetails> directionDetails = DirectionDetails(
     distanceText: "0",
@@ -369,7 +442,7 @@ class MapController extends GetxController {
     circlesSet.refresh();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
+    currentPosition.value = position;
 
     LatLng latLastPosition = LatLng(position.latitude, position.longitude);
 
