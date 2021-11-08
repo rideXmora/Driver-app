@@ -5,3 +5,7 @@ String Google_MAP_API_KEY = "AIzaSyB3fEmRVeEy8GFBuJobUztWY0W-pEs8rp8";
 String BASEURL = 'ridex.ml';
 
 String Google_MAP_API_BASEURL = "https://maps.googleapis.com";
+
+String CLOUD_NAME = "dkvj0ikpi";
+
+String UPLOAD_PRESET = "xfrgedyq";

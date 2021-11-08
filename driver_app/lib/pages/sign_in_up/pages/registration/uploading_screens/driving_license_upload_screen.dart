@@ -2,6 +2,7 @@ import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/vehicle.dart';
 import 'package:driver_app/pages/sign_in_up/pages/registration/documentation_screen.dart';
 import 'package:driver_app/pages/sign_in_up/widgets/ducument_box.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/theme/colors.dart';
@@ -9,6 +10,13 @@ import 'package:driver_app/widgets/custom_back_button.dart';
 import 'package:driver_app/widgets/main_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'dart:io';
+import 'package:driver_app/utils/config.dart';
+import 'package:driver_app/utils/pickedMedia.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 
 class DrivingLicenseUploadScreen extends StatefulWidget {
   DrivingLicenseUploadScreen({Key? key}) : super(key: key);
@@ -27,6 +35,106 @@ class _DrivingLicenseUploadScreenState
     super.initState();
   }
 
+  late File _image;
+  final picker = ImagePicker();
+  String imageUrl = "false";
+
+  Future _pickImageFromCamera() async {
+    final pickedImagefile = await PickMedia.takeImageToUpload(
+      cropImage: cropSquareImage,
+    );
+
+    if (pickedImagefile == null) {
+      print('No image selected.');
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        _image = File(pickedImagefile.path);
+      });
+      Navigator.pop(context);
+
+      await uploadImage();
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future _pickImageFromGalary() async {
+    final pickedImagefile = await PickMedia.pickImageToUpload(
+      cropImage: cropSquareImage,
+    );
+
+    if (pickedImagefile == null) {
+      setState(() {
+        loading = false;
+      });
+      print('No image selected.');
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        _image = File(pickedImagefile.path);
+      });
+      Navigator.pop(context);
+      await uploadImage();
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future<File> cropSquareImage(File imageFile) async {
+    File? file = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      compressQuality: 70,
+      compressFormat: ImageCompressFormat.jpg,
+      androidUiSettings: androidUiSettingsLocked(),
+      iosUiSettings: iosUiSettingsLocked(),
+    );
+
+    return file != null ? file : File("");
+  }
+
+  IOSUiSettings iosUiSettingsLocked() => IOSUiSettings(
+        rotateClockwiseButtonHidden: false,
+        rotateButtonsHidden: false,
+        aspectRatioLockEnabled: true,
+      );
+
+  AndroidUiSettings androidUiSettingsLocked() => AndroidUiSettings(
+        toolbarTitle: 'Crop Image',
+        toolbarColor: Colors.black,
+        toolbarWidgetColor: Colors.white,
+        lockAspectRatio: true,
+        // hideBottomControls: true,
+      );
+
+  Future uploadImage() async {
+    try {
+      debugPrint(UPLOAD_PRESET);
+      final cloudinary =
+          CloudinaryPublic(CLOUD_NAME, UPLOAD_PRESET, cache: false);
+      debugPrint(cloudinary.toString());
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(_image.path,
+            resourceType: CloudinaryResourceType.Image),
+      );
+      setState(() {
+        imageUrl = response.url;
+      });
+      print(response.url);
+      print(imageUrl);
+    } catch (e) {
+      debugPrint(e.toString());
+      print("error here");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -40,24 +148,32 @@ class _DrivingLicenseUploadScreenState
           width: width,
           height: height,
           onPressed: () async {
-            Vehicle vehicle = Get.find<UserController>().driver.value.vehicle;
-            Get.find<UserController>().driver.update((val) {
-              val!.vehicle = Vehicle(
-                number: vehicle.number,
-                vehicleType: vehicle.vehicleType,
-                model: vehicle.model,
-                license: "Lisence",
-                insurance: vehicle.insurance,
-                vehicleRegNo: vehicle.vehicleRegNo,
-              );
-            });
-            debugPrint(Get.find<UserController>()
-                .driver
-                .value
-                .vehicle
-                .toJson()
-                .toString());
-            Get.back();
+            if (!loading) {
+              if (imageUrl == "false") {
+                Get.snackbar("Not selected an image!!!",
+                    "First select an image to upload");
+              } else {
+                Vehicle vehicle =
+                    Get.find<UserController>().driver.value.vehicle;
+                Get.find<UserController>().driver.update((val) {
+                  val!.vehicle = Vehicle(
+                    number: vehicle.number,
+                    vehicleType: vehicle.vehicleType,
+                    model: vehicle.model,
+                    license: imageUrl,
+                    insurance: vehicle.insurance,
+                    vehicleRegNo: vehicle.vehicleRegNo,
+                  );
+                });
+                debugPrint(Get.find<UserController>()
+                    .driver
+                    .value
+                    .vehicle
+                    .toJson()
+                    .toString());
+                Get.back();
+              }
+            }
           },
           text: "CONTINUE",
           boxColor: primaryColorDark,
@@ -119,19 +235,33 @@ class _DrivingLicenseUploadScreenState
                         ),
                         // * Image
                         Center(
-                          child: Container(
-                            height: width * 0.4 * (3 / 4),
-                            width: width * 0.4,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFC4C4C4),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  "assets/images/images/detail_card_2.png",
+                          child: imageUrl == "false"
+                              ? Container(
+                                  height: width * 0.4 * (3 / 4),
+                                  width: width * 0.4,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFC4C4C4),
+                                    image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(
+                                        "assets/images/images/detail_card_2.png",
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  height: width * 0.7 * (3 / 4),
+                                  width: width * 0.7,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFC4C4C4),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(
+                                        imageUrl,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                         Align(
                           alignment: Alignment.bottomRight,
@@ -147,7 +277,91 @@ class _DrivingLicenseUploadScreenState
                               color: Colors.white,
                               iconSize: 25,
                               onPressed: () {
-                                //_pickImageFromToProfile(context);
+                                if (Platform.isIOS) {
+                                  final action = CupertinoActionSheet(
+                                    actions: <Widget>[
+                                      CupertinoActionSheetAction(
+                                        child: Text("Pick from Library"),
+                                        isDefaultAction: true,
+                                        onPressed: () async {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          await _pickImageFromGalary();
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text("Take a Photo"),
+                                        isDestructiveAction: true,
+                                        onPressed: () async {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          await _pickImageFromCamera();
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                    cancelButton: CupertinoActionSheetAction(
+                                      child: Text("Cancel"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+
+                                  showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (context) => action);
+                                } else {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            ListTile(
+                                              title: Center(
+                                                  child: new Text(
+                                                      'Pick from Library')),
+                                              onTap: () async {
+                                                setState(() {
+                                                  loading = true;
+                                                });
+                                                await _pickImageFromGalary();
+                                              },
+                                            ),
+                                            Divider(
+                                              color: Colors.grey,
+                                              height: 0.5,
+                                            ),
+                                            ListTile(
+                                              title: Center(
+                                                  child:
+                                                      new Text('Take a Photo')),
+                                              onTap: () async {
+                                                setState(() {
+                                                  loading = true;
+                                                });
+                                                await _pickImageFromCamera();
+                                              },
+                                            ),
+                                            Divider(
+                                              color: Colors.grey,
+                                              height: 0.5,
+                                            ),
+                                            ListTile(
+                                              title: Center(
+                                                  child: new Text('Cancel')),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }
                               },
                             ),
                           ),
