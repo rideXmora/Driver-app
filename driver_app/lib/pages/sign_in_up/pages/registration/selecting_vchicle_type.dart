@@ -149,7 +149,7 @@ class _SelectingVechicleTypeScreenState
                     height: 30,
                   ),
                   Text(
-                    "Choose you vechicle type",
+                    "chooseVehicle".tr,
                     style: TextStyle(
                       color: primaryColorDark,
                       fontSize: 30,

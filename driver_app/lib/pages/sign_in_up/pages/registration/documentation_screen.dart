@@ -29,17 +29,17 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
     {
       "page": ProfilePicUploadScreen(),
       "icon": "assets/svgs/Profile pic.svg",
-      "topic": "Profile Picture",
+      "topic": "driver-profileComplete-profile-picture".tr,
     },
     {
       "page": DrivingLicenseUploadScreen(),
       "icon": "assets/svgs/Id card.svg",
-      "topic": "Driving License",
+      "topic": "driver-profileComplete-driving-license".tr,
     },
     {
       "page": VechicleInsuaranceUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",
-      "topic": "Vehicle insurance (Third party/Private/Hiring)",
+      "topic": "driver-profileComplete-vehicle-insurance".tr,
     },
     // {
     //   "page": RevenueLicenseUploadScreen(),
@@ -49,7 +49,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
     {
       "page": VechicleRegistratonDocUploadScreen(),
       "icon": "assets/svgs/Detail card.svg",
-      "topic": "Vehicle Registration Document",
+      "topic": "driver-profileComplete-vehicle-reg".tr,
     },
   ];
   bool loading = false;
@@ -117,7 +117,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                   height: 7,
                 ),
                 Text(
-                  "Complete following steps to set up your accout.",
+                  "driver-profileComplete-subtitle".tr,
                   style: TextStyle(
                     color: primaryColorDark,
                     fontSize: 18,

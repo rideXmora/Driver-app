@@ -90,7 +90,7 @@ class _MobileNumberVerificationScreenState
                     height: 30,
                   ),
                   Text(
-                    "Confirm your number",
+                    "otpConfirm".tr,
                     style: TextStyle(
                       color: primaryColorDark,
                       fontSize: 30,
@@ -106,7 +106,7 @@ class _MobileNumberVerificationScreenState
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Enter the 6-digit code app just sent to",
+                          text: "otpConfirmText".tr,
                           style: TextStyle(
                             color: primaryColorDark,
                             fontSize: 15,
