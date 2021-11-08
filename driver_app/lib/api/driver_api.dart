@@ -8,3 +8,12 @@ Future<dynamic> profile({required String token}) async {
   );
   return response;
 }
+
+Future<dynamic> past({required String token}) async {
+  String url = '/api/driver/ride/past';
+  dynamic response = await getRequest(
+    url: url,
+    token: token,
+  );
+  return response;
+}

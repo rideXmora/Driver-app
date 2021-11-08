@@ -102,23 +102,31 @@ Future<Map<dynamic, dynamic>> putRequest(
   }
 }
 
-// export const putRequest = async (url, data, headers = {}) => {
-// 	try {
-// 		let response = (data) ? await axios.put(url, data, headers) : await axios.put(url, headers);
-// 		return generateSuccessOutput(response);
-// 	} catch (error) {
-// 		return generateErrorOutput(error);
-// 	}
-// };
+Future<dynamic> externalAPIGetRequest({required String url}) async {
+  try {
+    http.Response response = await http.get(
+      Uri.parse('$Google_MAP_API_BASEURL$url'),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
 
-// export const deleteRequest = async (url) => {
-// 	try {
-// 		let response = await axios.delete(url);
-// 		return generateSuccessOutput(response);
-// 	} catch (error) {
-// 		return generateErrorOutput(error);
-// 	}
-// };
+    if (response.statusCode == 200) {
+      String jsonData = response.body;
+      var decodeData = jsonDecode(jsonData);
+      return decodeData;
+    } else {
+      Get.snackbar("Something is wrong" + "!!!", "Please try again");
+      debugPrint(
+          "google ggenerateErrorOutput : " + response.statusCode.toString());
+      return "error";
+    }
+  } catch (error) {
+    Get.snackbar("Something is wrong" + "!!!", "Please try again");
+    debugPrint("google ggenerateErrorOutput : " + error.toString());
+    return "error";
+  }
+}
 
 Map<dynamic, dynamic> generateSuccessOutput(response) {
   debugPrint("generateSuccessOutput : " + response.body);

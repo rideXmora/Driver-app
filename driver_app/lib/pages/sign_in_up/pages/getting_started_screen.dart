@@ -98,7 +98,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                     height: 30,
                   ),
                   Text(
-                    "Let's get started now",
+                    "gettingStart".tr,
                     style: TextStyle(
                       color: primaryColorDark,
                       fontSize: 30,

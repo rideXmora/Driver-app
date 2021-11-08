@@ -1,3 +1,5 @@
+import 'package:driver_app/controllers/ride_controller.dart';
+import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/passenger.dart';
 import 'package:driver_app/modals/ride_request_passenger.dart';
 import 'package:driver_app/modals/trip.dart';
@@ -9,6 +11,8 @@ import 'package:driver_app/utils/ride_state_enum.dart';
 import 'package:driver_app/theme/colors.dart';
 import 'package:driver_app/widgets/secondary_button_with_icon.dart';
 import 'package:driver_app/widgets/simple_icon_text_box.dart';
+import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RideFloatingPanel extends StatelessWidget {
   RideFloatingPanel({
@@ -130,7 +134,20 @@ class RideFloatingPanel extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        String phone = Get.find<RideController>()
+                            .ride
+                            .value
+                            .rideRequest
+                            .passenger
+                            .phone;
+                        debugPrint(phone);
+                        await canLaunch("tel:$phone")
+                            ? await launch("tel:$phone")
+                            : Get.snackbar("Somethimg is wrong!",
+                                "Please try again later.");
+                        debugPrint(phone);
+                      },
                       child: Container(
                         width: 30,
                         height: 30,
@@ -234,7 +251,7 @@ class RideFloatingPanel extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Moratuwa, Sri Lanka",
+                                  trip.pickUp,
                                   style: TextStyle(
                                     color: primaryColorWhite,
                                     fontSize: 14,
@@ -261,7 +278,7 @@ class RideFloatingPanel extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Panadura, Sri Lanka",
+                                  trip.destination,
                                   style: TextStyle(
                                     color: primaryColorWhite,
                                     fontSize: 14,
@@ -294,21 +311,21 @@ class RideFloatingPanel extends StatelessWidget {
                     shadowColor: Colors.transparent,
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
-                Expanded(
-                  flex: 11,
-                  child: SecondaryButton(
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    onPressed: onPressedReject,
-                    loading: loadingRed,
-                    text: redTopic,
-                    boxColor: Color(0xFFD7A7A7),
-                    shadowColor: Colors.transparent,
-                  ),
-                ),
+                // Expanded(
+                //   flex: 2,
+                //   child: Container(),
+                // ),
+                // Expanded(
+                //   flex: 11,
+                //   child: SecondaryButton(
+                //     width: MediaQuery.of(context).size.width * 0.42,
+                //     onPressed: onPressedReject,
+                //     loading: loadingRed,
+                //     text: redTopic,
+                //     boxColor: Color(0xFFD7A7A7),
+                //     shadowColor: Colors.transparent,
+                //   ),
+                // ),
               ],
             ),
           ],
