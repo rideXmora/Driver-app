@@ -294,21 +294,21 @@ class RideFloatingPanel extends StatelessWidget {
                     shadowColor: Colors.transparent,
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
-                Expanded(
-                  flex: 11,
-                  child: SecondaryButton(
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    onPressed: onPressedReject,
-                    loading: loadingRed,
-                    text: redTopic,
-                    boxColor: Color(0xFFD7A7A7),
-                    shadowColor: Colors.transparent,
-                  ),
-                ),
+                // Expanded(
+                //   flex: 2,
+                //   child: Container(),
+                // ),
+                // Expanded(
+                //   flex: 11,
+                //   child: SecondaryButton(
+                //     width: MediaQuery.of(context).size.width * 0.42,
+                //     onPressed: onPressedReject,
+                //     loading: loadingRed,
+                //     text: redTopic,
+                //     boxColor: Color(0xFFD7A7A7),
+                //     shadowColor: Colors.transparent,
+                //   ),
+                // ),
               ],
             ),
           ],
