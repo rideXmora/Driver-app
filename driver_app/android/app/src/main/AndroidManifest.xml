@@ -48,6 +48,7 @@
                 <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+            
         </activity>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
@@ -60,5 +61,15 @@
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAuvO3-9VVX4IhAf47TePWq_z6F6hIED1g"/>
+        
     </application>
+    <queries>
+
+      <!-- If your app makes calls -->
+      <intent>
+        <action android:name="android.intent.action.DIAL" />
+        <data android:scheme="tel" />
+      </intent>
+
+    </queries>
 </manifest>

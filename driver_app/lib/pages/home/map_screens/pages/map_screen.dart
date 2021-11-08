@@ -31,6 +31,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -196,6 +197,7 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
+
       bool result = await Get.find<RideController>().rideRequestAccepting();
       // try {
       //   stompClient = StompClient(
