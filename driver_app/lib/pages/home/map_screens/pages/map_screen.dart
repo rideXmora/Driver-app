@@ -64,6 +64,8 @@ class _MapScreenState extends State<MapScreen> {
   //RideState rideState = RideState.NOTRIP;
   //RideRequestState rideRequest = RideRequestState.NOTRIP;
 
+  var stompClient;
+
   int rating = 1;
   TextEditingController comment = TextEditingController();
 
@@ -78,35 +80,16 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-
-    // try {
-    //   stompClient = StompClient(
-    //       config: StompConfig.SockJS(
-    //     url: 'http://ridex.ml/ws',
-    //     onConnect: onConnect,
-    //     beforeConnect: () async {
-    //       print('waiting to connect...');
-    //       await Future.delayed(Duration(milliseconds: 200));
-    //       print('connecting...');
-    //     },
-    //     onWebSocketError: (dynamic error) => print(error.toString()),
-    //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
-    //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
-    //   ));
-    //   stompClient.activate();
-    // } catch (e) {
-    //   debugPrint(e.toString());
-    // }
-    // stompClient.activate();
   }
 
   // void onConnect(StompFrame frame) {
-  //   var sname = "+94711737706";
+  //   var sname =
+  //       Get.find<RideController>().ride.value.rideRequest.passenger.phone;
   //   stompClient.subscribe(
   //     destination: "/user/" + sname + "/queue/messages",
   //     callback: (frame) {
-  //       List<dynamic>? result = json.decode(frame.body!);
-  //       print(result);
+  //       var result = json.decode(frame.body!);
+  //       print("driver: " + result.toString());
   //     },
   //   );
 
@@ -122,8 +105,7 @@ class _MapScreenState extends State<MapScreen> {
   //   );
   // });
   // }
-
-  var stompClient;
+  // }
 
   Widget _floatingCollapsed() {
     return Container(
@@ -215,6 +197,55 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestAccepting();
+      // try {
+      //   stompClient = StompClient(
+      //       config: StompConfig.SockJS(
+      //     url: 'http://ridex.ml/ws',
+      //     onConnect: onConnect,
+      //     beforeConnect: () async {
+      //       print('waiting to connect...');
+      //       await Future.delayed(Duration(milliseconds: 200));
+      //       print('connecting...');
+      //     },
+      //     onWebSocketError: (dynamic error) => print(error.toString()),
+      //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+      //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+      //   ));
+      //   stompClient.activate();
+
+      //   Timer.periodic(Duration(seconds: 2), (Timer timer) async {
+      //     if (Get.find<RideController>().ride.value.rideStatus ==
+      //             RideState.DROPPED ||
+      //         Get.find<RideController>().ride.value.rideStatus ==
+      //             RideState.FINISHED ||
+      //         Get.find<RideController>().ride.value.rideStatus ==
+      //             RideState.NOTRIP) {
+      //       timer.cancel();
+      //     } else {
+      //       debugPrint("safa");
+      //       Position position = await Geolocator.getCurrentPosition(
+      //           desiredAccuracy: LocationAccuracy.high);
+
+      //       var message = {
+      //         "senderPhone": Get.find<UserController>().driver.value.phone,
+      //         "receiverPhone": Get.find<RideController>()
+      //             .ride
+      //             .value
+      //             .rideRequest
+      //             .passenger
+      //             .phone,
+      //         "location": {"x": position.latitude, "y": position.longitude},
+      //       };
+      //       stompClient.send(
+      //         destination: '/app/chat',
+      //         body: json.encode(message),
+      //       );
+      //     }
+      //   });
+      // } catch (e) {
+      //   debugPrint(e.toString());
+      // }
+      // stompClient.activate();
 
       setState(() {
         loadingGreen = false;
@@ -649,15 +680,22 @@ class _MapScreenState extends State<MapScreen> {
                   //     icon: Icons.online_prediction,
                   //     iconColor: primaryColorWhite,
                   //     onPressed: () {
-                  //       // const message = {
-                  //       //   "senderPhone": "sname",
-                  //       //   "receiverPhone": "rname",
-                  //       //   "location": {"x": 1.2222, "y": 2.444},
-                  //       // };
-                  //       // stompClient.send(
-                  //       //   destination: '/app/chat',
-                  //       //   body: json.encode(message),
-                  //       // );
+                  //       debugPrint("safa");
+                  //       Timer.periodic(Duration(seconds: 2), (Timer timer) {
+                  //         debugPrint("safa");
+                  //         const message = {
+                  //           "senderPhone": "+94763067706",
+                  //           "receiverPhone": "+94714862398",
+                  //           "location": {"x": 1.2222, "y": 2.444},
+                  //         };
+                  //         stompClient.send(
+                  //           destination: '/app/chat',
+                  //           body: json.encode(message),
+                  //         );
+                  //         if (timer == Duration(seconds: 10)) {
+                  //           timer.cancel();
+                  //         }
+                  //       });
                   //     },
                   //     text: "send message",
                   //     boxColor: primaryColorDark,
