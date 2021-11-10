@@ -42,7 +42,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   awesome_card:
   lottie:
-  get: ^4.3.8
+  get: 4.1.4
   http: ^0.13.3
   shared_preferences:
   jwt_decoder: ^2.0.1
