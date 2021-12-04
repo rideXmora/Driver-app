@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:driver_app/api/driver_api.dart';
+import 'package:driver_app/api/utils.dart';
 import 'package:driver_app/controllers/map_controller.dart';
 import 'package:driver_app/controllers/ride_controller.dart';
 import 'package:driver_app/modals/driver.dart';
@@ -19,6 +20,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class UserController extends GetxController {
+  late final DriverApi driverApi;
+
+  UserController(this.driverApi);
+
+  void initState() {
+    this.driverApi = DriverApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  UserController.internal(this.driverApi);
+
   var driver =
       Driver(vehicle: Vehicle(), driverOrganization: Organization()).obs;
 
@@ -61,6 +73,7 @@ class UserController extends GetxController {
       val.email = data["email"] == null ? "" : data["email"];
       val.name = data["name"] == null ? "" : data["name"];
       val.totalRating = data["totalRating"];
+      val.city = data["city"] == null ? "" : data["city"];
       val.totalRides = data["totalRides"];
       val.pastRides =
           data["pastRides"] == null ? [] : List<String>.from(data["pastRides"]);
@@ -95,7 +108,6 @@ class UserController extends GetxController {
       val.phone = data["phone"];
       val.email = data["email"] == null ? "" : data["email"];
       val.name = data["name"] == null ? "" : data["name"];
-
       val.totalRating = data["totalRating"];
       val.totalRides = data["totalRides"];
       val.pastRides =
@@ -159,8 +171,8 @@ class UserController extends GetxController {
   }
 
   Future<void> getPastTripDetails() async {
-    dynamic response =
-        await past(token: Get.find<UserController>().driver.value.token);
+    dynamic response = await driverApi.past(
+        token: Get.find<UserController>().driver.value.token);
 
     debugPrint(response["enabled"].toString());
 

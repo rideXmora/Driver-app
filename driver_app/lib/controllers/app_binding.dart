@@ -1,4 +1,7 @@
-import 'package:driver_app/controllers/notification_controller.dart';
+import 'package:driver_app/api/auth_api.dart';
+import 'package:driver_app/api/driver_api.dart';
+import 'package:driver_app/api/driver_ride_api.dart';
+import 'package:driver_app/api/utils.dart';
 import 'package:driver_app/controllers/organization_controller.dart';
 import 'package:get/get.dart';
 import 'package:driver_app/controllers/auth_controller.dart';
@@ -12,11 +15,11 @@ class AppBinding extends Bindings {
   void dependencies() {
     print("app binding");
     Get.lazyPut<Controller>(() => Controller());
-    Get.lazyPut<AuthController>(() => AuthController());
-    Get.lazyPut<MapController>(() => MapController());
-    Get.lazyPut<UserController>(() => UserController());
-    Get.put(RideController());
-    Get.put(OrganizationController());
-    Get.put(NotificationController());
+    Get.lazyPut<AuthController>(
+        () => AuthController(AuthApi(ApiUtils()), DriverApi(ApiUtils())));
+    Get.lazyPut<MapController>(() => MapController(ApiUtils()));
+    Get.lazyPut<UserController>(() => UserController(DriverApi(ApiUtils())));
+    Get.put(RideController(DriverRideApi(ApiUtils())));
+    Get.put(OrganizationController(ApiUtils()));
   }
 }

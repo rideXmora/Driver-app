@@ -1,11 +1,22 @@
 import 'package:driver_app/api/utils.dart';
 import 'package:driver_app/modals/organization.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OrganizationController extends GetxController {
+  late final ApiUtils apiUtils;
+  OrganizationController(this.apiUtils);
+
+  void initState() {
+    this.apiUtils = ApiUtils();
+  }
+
+  @visibleForTesting
+  OrganizationController.internal(this.apiUtils);
+
   Future<List<Organization>> allOrg({required String token}) async {
     String url = '/api/common/allOrg';
-    dynamic response = await getRequest(
+    dynamic response = await apiUtils.getRequest(
       url: url,
       token: token,
     );
