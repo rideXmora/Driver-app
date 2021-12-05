@@ -17,7 +17,7 @@ class AppBinding extends Bindings {
     Get.lazyPut<Controller>(() => Controller());
     Get.lazyPut<AuthController>(
         () => AuthController(AuthApi(ApiUtils()), DriverApi(ApiUtils())));
-    Get.lazyPut<MapController>(() => MapController(ApiUtils()));
+    Get.put(MapController(ApiUtils()));
     Get.lazyPut<UserController>(() => UserController(DriverApi(ApiUtils())));
     Get.put(RideController(DriverRideApi(ApiUtils())));
     Get.put(OrganizationController(ApiUtils()));
