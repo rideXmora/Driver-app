@@ -1,4 +1,5 @@
 import 'package:driver_app/api/driver_ride_api.dart';
+import 'package:driver_app/api/utils.dart';
 import 'package:driver_app/controllers/map_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/location.dart';
@@ -19,6 +20,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class RideController extends GetxController {
+  late final DriverRideApi driverRideApi;
+
+  RideController(this.driverRideApi);
+
+  void initState() {
+    this.driverRideApi = DriverRideApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  RideController.internal(this.driverRideApi);
+
   UserController userController = Get.find<UserController>();
   Rx<Trip> trip = Trip(
     pickUp: "",
@@ -56,7 +68,7 @@ class RideController extends GetxController {
     required double y,
   }) async {
     DriverState state = userController.driver.value.status;
-    dynamic response = await toggleStatus(
+    dynamic response = await driverRideApi.toggleStatus(
       x: x,
       y: y,
       token: Get.find<UserController>().driver.value.token,
@@ -214,7 +226,7 @@ class RideController extends GetxController {
   Future<bool> rideRequestAccepting() async {
     try {
       //hardcoded ride requsest id
-      dynamic response = await accept(
+      dynamic response = await driverRideApi.accept(
         id: ride.value.rideRequest.id,
         token: Get.find<UserController>().driver.value.token,
       );
@@ -248,7 +260,7 @@ class RideController extends GetxController {
     try {
       //hardcoded id
 
-      dynamic response = await arrived(
+      dynamic response = await driverRideApi.arrived(
         id: ride.value.id,
         token: Get.find<UserController>().driver.value.token,
       );
@@ -281,7 +293,7 @@ class RideController extends GetxController {
     try {
       //hardcoded id
 
-      dynamic response = await picked(
+      dynamic response = await driverRideApi.picked(
         id: ride.value.id,
         token: Get.find<UserController>().driver.value.token,
       );
@@ -314,7 +326,7 @@ class RideController extends GetxController {
     try {
       //hardcoded id
 
-      dynamic response = await dropped(
+      dynamic response = await driverRideApi.dropped(
         id: ride.value.id,
         token: Get.find<UserController>().driver.value.token,
       );
@@ -361,7 +373,7 @@ class RideController extends GetxController {
     try {
       //hardcoded id
 
-      dynamic response = await finished(
+      dynamic response = await driverRideApi.finished(
         id: ride.value.id,
         passengerRating: passengerRating,
         driverFeedback: driverFeedback,

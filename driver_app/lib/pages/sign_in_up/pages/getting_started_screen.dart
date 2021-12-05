@@ -23,6 +23,11 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   String dropdownValue = "+94";
   TextEditingController mobileNumberController = TextEditingController();
   bool loading = false;
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("gettingStart".tr);
+  }
 
   void onSubmitText(String value) async {
     if (!loading) {

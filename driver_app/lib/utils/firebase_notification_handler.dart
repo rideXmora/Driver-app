@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:driver_app/controllers/notification_controller.dart';
 import 'package:driver_app/controllers/ride_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

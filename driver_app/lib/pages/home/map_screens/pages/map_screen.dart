@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:driver_app/api/notification_api.dart';
 import 'package:driver_app/controllers/map_controller.dart';
-import 'package:driver_app/controllers/notification_controller.dart';
 import 'package:driver_app/controllers/ride_controller.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/passenger.dart';

@@ -1,4 +1,5 @@
 import 'package:driver_app/api/driver_api.dart';
+import 'package:driver_app/api/utils.dart';
 import 'package:driver_app/controllers/user_controller.dart';
 import 'package:driver_app/modals/organization.dart';
 import 'package:driver_app/modals/vehicle.dart';
@@ -23,6 +24,18 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthController extends GetxController {
   // SplashScreen data loading
+  late final AuthApi authApi;
+  late final DriverApi driverApi;
+  AuthController(this.authApi, this.driverApi);
+
+  void initState() {
+    this.authApi = AuthApi(ApiUtils());
+    this.driverApi = DriverApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  AuthController.internal(this.authApi, this.driverApi);
+
   Future<void> loadData() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
@@ -75,7 +88,7 @@ class AuthController extends GetxController {
             Get.offAll(WelcomeScreen());
           } else {
             debugPrint("token valid");
-            dynamic response = await profile(token: token);
+            dynamic response = await driverApi.profile(token: token);
             debugPrint("profile grabbed");
             Get.find<UserController>().clearData();
             Get.find<UserController>().updateDriverData(
@@ -118,7 +131,7 @@ class AuthController extends GetxController {
   // requesting otp from GettingStartedScreen
   Future<void> getOTP({required String phone, required String from}) async {
     if (phone.length == 12) {
-      dynamic response = await phoneAuth(phone: phone);
+      dynamic response = await authApi.phoneAuth(phone: phone);
       debugPrint(response.toString());
       if (response["error"] != true) {
         if (from == "main") {
@@ -153,7 +166,7 @@ class AuthController extends GetxController {
         Get.snackbar("Something is wrong!!!", "Please try again");
         return;
       }
-      dynamic response = await phoneVerify(phone: phone, otp: otp);
+      dynamic response = await authApi.phoneVerify(phone: phone, otp: otp);
 
       debugPrint(response["enabled"].toString());
 
@@ -211,7 +224,7 @@ class AuthController extends GetxController {
         Get.snackbar("Something is wrong!!!", "Please try again");
         return;
       }
-      dynamic response = await profileComplete(
+      dynamic response = await authApi.profileComplete(
         name: name,
         email: email,
         city: city,
@@ -275,7 +288,7 @@ class AuthController extends GetxController {
     } else {
       try {
         Get.find<UserController>().addVehicleInfo(vehicle, "other");
-        dynamic response = await addVehicle(
+        dynamic response = await authApi.addVehicle(
             vehicle: vehicle,
             token: Get.find<UserController>().driver.value.token);
 

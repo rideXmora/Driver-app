@@ -103,7 +103,7 @@ class HistoryDataBox extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 30,
+                                  height: 34,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -131,7 +131,7 @@ class HistoryDataBox extends StatelessWidget {
                                   height: 10,
                                 ),
                                 Container(
-                                  height: 30,
+                                  height: 34,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
